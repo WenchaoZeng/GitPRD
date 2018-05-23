@@ -20,5 +20,4 @@
 * Web服务器
 * Url里内嵌分支名
 * Url里内嵌commit id
-* 注册git hook自动拉取更新
 
