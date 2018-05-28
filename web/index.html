@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="UTF-8" />
+<title id="title">Home</title>
+</head>
+<iframe src="push.html" id="push" hidden="hidden"></iframe>
+<style>
+	.divstyle{
+		border: 1px solid #5bc0de;
+		width: 1000px;
+		text-align: center; /*让div内部文字居中*/
+		border-radius: 20px;
+		margin: auto;
+		position: absolute;
+
+		left: 0;
+		right: 0;
+		bottom: 0;
+	}
+
+	.button-circle {
+		border-radius: 100%;
+	}
+
+
+	.button-circle.button-jumbo,
+	.button-box.button-jumbo,
+	.button-square.button-jumbo {
+		width: 70px;
+	}
+
+
+</style>
+<body>
+<hr>
+<div id="branchData" class="divstyle" style="top: -700px; height:50px;">
+	<span>
+		embedded webServer
+	</span>
+	<span style="float: right;">
+		<button class="button button-circle button-jumbo" onclick="reload()">重新加载</button>
+	</span>
+
+</div>
+<div class="divstyle" style="top: -400px; height: auto">
+	<span>
+		<a>branch: master </a><br>
+		<a>branch: master </a><br>
+		<a>branch: master </a><br>
+		<a>branch: master </a><br>
+		<a>branch: master </a><br>
+		<a>branch: master </a><br>
+		<a>branch: master </a><br>
+	</span>
+</div>
+
+</body>
+</html>
+
+<script>
+	function reload() {
+		window.location.reload()
+    }
+</script>
