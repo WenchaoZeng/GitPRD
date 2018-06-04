@@ -3,8 +3,7 @@
 ## 客户端
 * mac app免安装
 * 内嵌web view, 使用html,js,css写页面
-* 自动安装配置本地git环境
-* 配置: ssh key, git仓库地址
+* 默认配置: ssh key, git仓库地址
 * 分支列表 (显示所有分支和只显示本地分支)
 * 新建分支
 * 点击在Finder里打开本地文件夹
