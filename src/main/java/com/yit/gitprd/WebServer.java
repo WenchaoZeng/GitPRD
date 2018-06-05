@@ -25,6 +25,7 @@ public class WebServer {
         while (port < 9000) {
             try {
                 server = HttpServer.create(new InetSocketAddress(port), 0);
+                Global.httpServer = server;
                 Global.port = port;
                 break;
             } catch (java.net.BindException ex) {

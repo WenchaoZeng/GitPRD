@@ -1,5 +1,7 @@
 package com.yit.gitprd;
 
+import com.sun.net.httpserver.HttpServer;
+
 /**
  * 全局存储区
  */
@@ -19,6 +21,11 @@ public class Global {
      *  WebServer 端口号
      */
     public static int port;
+
+    /**
+     *  HTTP Server
+     */
+    public static HttpServer httpServer;
 
     /**
      * 日志

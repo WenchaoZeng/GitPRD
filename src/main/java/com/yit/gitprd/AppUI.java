@@ -75,5 +75,9 @@ public class AppUI {
             }
         });
 
+        // UI关闭后, 停止Server运行
+        Runtime.getRuntime().addShutdownHook(new Thread(()->{
+            Global.httpServer.stop(3);
+        }));
     }
 }
