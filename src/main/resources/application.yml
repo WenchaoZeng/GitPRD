@@ -5,3 +5,11 @@
 server:
   contextPath: /
 
+gitlub:
+  api:
+    prefix: http://gitlab.yit.com/api/v3
+  project:
+    name: prd
+    path: javayuanjian%2F${gitlub.project.name}
+  auth:
+    private_token: _Wk4XsmrGzikACbLCtXR
