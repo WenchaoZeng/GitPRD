@@ -1,0 +1,8 @@
+############# default cfg #############
+
+
+#server
+server:
+  port: 8000
+  contextPath: /
+

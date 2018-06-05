@@ -6,7 +6,7 @@ package com.yit.gitprd;
 public class GitPrd {
 
     public static void main(String[] args) throws Exception {
-        new WebServer();
+        //new WebServer();
         new AppUI();
     }
 }

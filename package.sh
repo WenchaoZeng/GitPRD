@@ -1,27 +1,26 @@
-mvn clean
-mvn package
+mvn clean package -Dmaven.test.skip=true
 
 # 拷贝文件到目标目录
 rm -rdf ./target/release
 mkdir ./target/release
-cp ./target/screenbroadcast*.jar ./target/release/ScreenbBroadcast.jar
-cp -R ./web ./target/release/
+cp ./target/gitprd*.jar ./target/release/gitprd.jar
+cp -R ./src/main/resources/static ./target/release/
 
 # mac app打包: http://centerkey.com/mac/java/
 jdk=$(/usr/libexec/java_home)
 $jdk/bin/javapackager \
    -deploy \
    -native image \
-   -name ScreenBroadcast \
+   -name gitprd \
    -BappVersion=0.0.0 \
    -Bicon=app.icns \
    -srcdir ./target/release \
-   -srcfiles ScreenbBroadcast.jar:web/index.html:web/mouse.png \
-   -appclass com.zwc.screenbroadcast.ScreenBroadcast \
+   -srcfiles gitprd.jar:static/html/index.html:static/images/mouse.png \
+   -appclass com.yit.gitprd.StartApplication \
    -outdir target/release/result \
-   -outfile ScreenBroadcast \
+   -outfile gitprd \
    -nosign \
    -v
 
-cd ./target/release/result/bundles
-zip -r9 ScreenBroadcast.zip ./*
+
+open /Users/clive/data/code/GitPRD/target/release/result/bundles/gitprd.app
