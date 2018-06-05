@@ -51,7 +51,7 @@ public class AppUI {
             view.setPrefSize(widthDouble, heightDouble);
             final WebEngine eng = view.getEngine();
 
-            eng.load("http://127.0.0.1:"+Global.port+"/index.html");
+            eng.load("http://127.0.0.1:8000/html/index.html");
             // bind
             root.getChildren().add(view);
             box.getChildren().add(view);
