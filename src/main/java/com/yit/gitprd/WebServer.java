@@ -32,6 +32,8 @@ public class WebServer {
             }
         }
 
+        Log.info("local webServer port open : " + port);
+
         // 开启web服务器
         server.setExecutor(Executors.newCachedThreadPool());
         server.createContext("/", new RootHandler());
@@ -45,6 +47,14 @@ public class WebServer {
 
             // 请求参数
             String path = t.getRequestURI().getPath();
+
+            if (path.endsWith("getData")) {
+                t.getResponseHeaders().add("content-type", "application/json");
+                t.sendResponseHeaders(200, "request sueccess".length());
+                OutputStream os = t.getResponseBody();
+                os.write("request sueccess".getBytes());
+                os.close();
+            }
 
             // 推送
             if (path.endsWith("push.html")) {
