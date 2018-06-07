@@ -1,6 +1,6 @@
 package com.yit.gitprd;
 
-import com.sun.net.httpserver.HttpServer;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 
 /**
  * 全局存储区
@@ -25,7 +25,7 @@ public class Global {
     /**
      *  HTTP Server
      */
-    public static HttpServer httpServer;
+    public static SpringApplicationBuilder httpBuilder;
 
     /**
      * 日志

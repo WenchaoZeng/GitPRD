@@ -52,7 +52,14 @@
             <scope>test</scope>
         </dependency>
 
+        <!--热加载Springboot文件及代码-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
+
 
     <build>
         <plugins>
@@ -110,7 +117,6 @@
                         </goals>
                     </execution>
                 </executions>
-
             </plugin>
 
         </plugins>

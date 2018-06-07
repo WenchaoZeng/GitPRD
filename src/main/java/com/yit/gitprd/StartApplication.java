@@ -17,9 +17,7 @@ public class StartApplication {
     public static void main(String[] args) {
         SpringApplicationBuilder builder = new SpringApplicationBuilder(StartApplication.class);
         builder.headless(false).run(args);
+        Global.httpBuilder = builder;
         new AppUI();
-
-
-
     }
 }
