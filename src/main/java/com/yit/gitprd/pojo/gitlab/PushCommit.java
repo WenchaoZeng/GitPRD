@@ -1,5 +1,7 @@
 package com.yit.gitprd.pojo.gitlab;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +12,9 @@ import java.util.List;
  */
 public class PushCommit {
 
+    @JSONField(name="branch_name")
     private String branchName;
+    @JSONField(name="commit_message")
     private String commitMessage;
     private List<CommitAction> actions = new ArrayList<>();
 

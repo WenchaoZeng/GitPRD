@@ -16,4 +16,8 @@ public class GitlabServiceException extends Exception {
     public GitlabServiceException(GitLabReturnCode gitLabReturnCode) {
         super(gitLabReturnCode.getText());
     }
+
+    public GitlabServiceException(HttpException e) {
+        super("接口异常: " + e.getMessage());
+    }
 }

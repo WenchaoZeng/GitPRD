@@ -28,13 +28,13 @@ public interface GitLabApiService {
     void deleteRemoteBranch(String branchName) throws GitlabServiceException;
 
     //打tag
-    void addTag(String tagName, String ref, String msg) throws GitlabServiceException;
+    void addTag(String tagName, String ref) throws GitlabServiceException;
 
     //提交更改
-    void commit(PushCommit pushCommit) throws GitlabServiceException;
+    Commit commit(PushCommit pushCommit) throws GitlabServiceException;
 
     //拉取更新
-    Commit pull(String branch);
+    Commit pull(String branchName) throws GitlabServiceException;
 
 
 }

@@ -26,6 +26,7 @@ public class HttpUtils {
     private final static int TIME_OUT = 30 * 1000;
 
     private final static int SUCCESS_CODE = 200;
+    private final static int CREATED_CODE = 201;
     private final static int BAD_REQUEST_CODE = 400;
     private final static int UNAUTHORIZED_CODE = 401;
     private final static int METHOD_NOT_ALLOWED_CODE = 405;
@@ -52,7 +53,19 @@ public class HttpUtils {
      * @throws GitlabServiceException
      */
     public static String sendDelete(String url, String privateToken, Map<String, String> params) throws HttpException, GitlabServiceException {
-        return send(url, privateToken, params, Connection.Method.DELETE);
+        return send(url, privateToken, params, Connection.Method.DELETE, null);
+    }
+
+    /**
+     * @param url
+     * @param privateToken
+     * @param payload 入参json字符串
+     * @return
+     * @throws HttpException
+     * @throws GitlabServiceException
+     */
+    public static String sendPostWithPayload(String url, String privateToken, String payload) throws HttpException, GitlabServiceException {
+        return send(url, privateToken, null, Connection.Method.POST, payload);
     }
 
     /**
@@ -66,7 +79,7 @@ public class HttpUtils {
      * @throws GitlabServiceException
      */
     public static String sendPost(String url, String privateToken, Map<String, String> params) throws HttpException, GitlabServiceException {
-        return send(url, privateToken, params, Connection.Method.POST);
+        return send(url, privateToken, params, Connection.Method.POST, null);
     }
 
 
@@ -80,7 +93,7 @@ public class HttpUtils {
      * @throws GitlabServiceException
      */
     public static String sendGet(String url, String privateToken) throws HttpException, GitlabServiceException {
-        return send(url, privateToken, null, Connection.Method.GET);
+        return send(url, privateToken, null, Connection.Method.GET, null);
     }
 
 
@@ -99,7 +112,7 @@ public class HttpUtils {
     //处理http状态码
     private static void handleHttpStatusCode(Connection.Response response) throws GitlabServiceException, HttpException {
         int statusCode = response.statusCode();
-        if (SUCCESS_CODE != statusCode) {
+        if (SUCCESS_CODE != statusCode && CREATED_CODE != statusCode) {
             switch (statusCode) {
                 case UNAUTHORIZED_CODE:
                     throw new GitlabServiceException(AUTH_ERR_MSG);
@@ -114,7 +127,9 @@ public class HttpUtils {
     }
 
     private static void parseErrorMsg(Connection.Response response) throws GitlabServiceException {
-        String errorMsg = JSON.parseObject(response.body()).getString("message");
+
+        String body = response.body();
+        String errorMsg = JSON.parseObject(body).getString("message");
         Optional<GitLabReturnCode> gitLabReturnCode = GitLabReturnCode.parseByGitLabOriginalMsg(errorMsg);
         if (gitLabReturnCode.isPresent())
             throw new GitlabServiceException(gitLabReturnCode.get());
@@ -122,13 +137,17 @@ public class HttpUtils {
             throw new GitlabServiceException(errorMsg);
     }
 
-    private static String send(String url, String privateToken, Map<String, String> paramMap, Connection.Method method)
+    private static String send(String url, String privateToken, Map<String, String> paramMap, Connection.Method method,
+                               String payload)
             throws HttpException, GitlabServiceException {
         try {
             Connection connection = getConnection(url, privateToken)
                     .method(method);
             if (paramMap != null) {
                 connection.data(paramMap);
+            }
+            if (payload != null) {
+                connection.requestBody(payload);
             }
             Connection.Response response = connection
                     .execute();
