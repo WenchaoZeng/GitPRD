@@ -1,8 +1,11 @@
 package com.yit.gitprd;
 
-import org.springframework.boot.SpringApplication;
+import com.yit.gitprd.cons.AppCons;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
+import org.springframework.boot.context.embedded.tomcat.ConnectorStartFailedException;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
@@ -12,12 +15,35 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @SpringBootApplication
 @ComponentScan("com.yit.gitprd")
-public class StartApplication {
+public class StartApplication implements EmbeddedServletContainerCustomizer {
 
     public static void main(String[] args) {
+        int port = AppCons.MIN_PORT;
+        while (port < AppCons.MAX_PORT) {
+            try {
+                Global.port = port;
+                startWebServer(args);
+                break;
+            } catch (ConnectorStartFailedException e) {
+                port++;
+            }
+        }
+
+        startAppUI();
+
+    }
+
+    @Override
+    public void customize(ConfigurableEmbeddedServletContainer configurableEmbeddedServletContainer) {
+        configurableEmbeddedServletContainer.setPort(Global.port);
+    }
+
+    private static void startWebServer(String[] args) {
         SpringApplicationBuilder builder = new SpringApplicationBuilder(StartApplication.class);
         builder.headless(false).run(args);
-        Global.httpBuilder = builder;
+    }
+
+    private static void startAppUI() {
         new AppUI();
     }
 }

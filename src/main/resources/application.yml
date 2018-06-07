@@ -3,6 +3,13 @@
 
 #server
 server:
-  port: 8000
   contextPath: /
 
+gitlab:
+  api:
+    prefix: http://gitlab.yit.com/api/v3
+  project:
+    name: prd
+    path: javayuanjian%2F${gitlab.project.name}
+  auth:
+    private_token: _Wk4XsmrGzikACbLCtXR

@@ -5,6 +5,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 import javax.swing.*;
+
+import com.yit.gitprd.cons.AppCons;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Group;
@@ -14,7 +16,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
 /**
- *  主视图
+ * 主视图
  */
 public class AppUI {
 
@@ -35,7 +37,7 @@ public class AppUI {
         frame.setLayout(new BorderLayout());
         frame.add(webBrowser, BorderLayout.CENTER);
 
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             // 创建 Group 场景
             Group root = new Group();
             scene = new Scene(root, WIDTH, HEIGHT);
@@ -51,7 +53,12 @@ public class AppUI {
             view.setPrefSize(widthDouble, heightDouble);
             final WebEngine eng = view.getEngine();
 
-            eng.load("http://127.0.0.1:8000/html/index.html");
+            StringBuilder url = new StringBuilder(AppCons.PROTOCOL);
+            url.append(AppCons.LOCALHOST)
+                    .append(":")
+                    .append(Global.port)
+                    .append(AppCons.DEFAULT_URL);
+            eng.load(url.toString());
             // bind
             root.getChildren().add(view);
             box.getChildren().add(view);
