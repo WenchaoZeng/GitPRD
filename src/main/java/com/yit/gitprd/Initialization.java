@@ -8,11 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 /**
+ * 初始化加载
+ *
  * @author: clive
  * @date: 2018/06/08
  * @since: 1.0
@@ -31,7 +31,7 @@ public class Initialization implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         //创建工作目录
         createWorkSpace();
-        //克隆prd主分支
+        //克隆prd主分支, 如果存在则不克隆
         cloneMasterBranch();
     }
 

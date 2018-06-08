@@ -12,4 +12,5 @@ git:
 
 gitprd:
   cfg:
+    # gitPRD workspace path in /Users/{user}/
     root_path_name: gitPRD

@@ -15,7 +15,7 @@ $jdk/bin/javapackager \
    -BappVersion=0.0.0 \
    -Bicon=app.icns \
    -srcdir ./target/release \
-   -srcfiles gitprd.jar:static/html/index.html:static/images/mouse.png \
+   -srcfiles gitprd.jar:static/html/index.html \
    -appclass org.springframework.boot.loader.JarLauncher \
    -outdir target/release/result \
    -outfile gitprd \
