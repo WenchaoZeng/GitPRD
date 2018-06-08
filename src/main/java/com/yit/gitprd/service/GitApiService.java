@@ -6,6 +6,7 @@ import com.yit.gitprd.pojo.git.GitStatus;
 import com.yit.gitprd.utils.SystemUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
+import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
@@ -156,6 +157,20 @@ public class GitApiService {
     public boolean respExist(String branchPath) {
         File file = new File(branchPath + "/.git");
         return file.exists();
+    }
+
+    /**
+     * 重置
+     *
+     * @param branchName
+     * @throws GitAPIException
+     */
+    public void reset(String branchName) throws GitAPIException {
+        try (Git git = gitBranch(branchName)) {
+            git.reset()
+                    .setMode(ResetCommand.ResetType.HARD)
+                    .call();
+        }
     }
 
 

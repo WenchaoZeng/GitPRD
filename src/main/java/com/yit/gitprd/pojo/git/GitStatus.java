@@ -9,6 +9,8 @@ import org.eclipse.jgit.api.Status;
  */
 public class GitStatus {
 
+    private String branchName;
+
     private Status status;
     /**
      * 存在未提交文件: 新添加,新改动
@@ -16,6 +18,14 @@ public class GitStatus {
     private Boolean existUnCommit;
 
     //--
+
+    public String getBranchName() {
+        return branchName;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
+    }
 
     public Status getStatus() {
         return status;

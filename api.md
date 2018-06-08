@@ -1,17 +1,12 @@
 # api
-* prd列表 (仅本地, 所有)
-* 新建prd
+* prd列表 (本地, 远程, 所有)
+* 新建prd (基于某个分支创建 本地&远程)
 * 提交改动
 * 撤销本地改动
-* 查询prd更新状态
-* 拉取更新 (如有冲突提示覆盖)
-* 删除prd (仅本地|远程)
+* 推送prd更新状态
+* 拉取更新 (先撤销改动再拉取,防止冲突)
+* 删除prd (本地和远程)
+* 在finder中打开
+* 点击打开在线prd
 
 
-
-# init
-* create folders
-    * ~/gitprd (rootPath)
-    * ~/gitprd/master (master branch)
-    * ~/gitprd/branches (local branches)
-    
