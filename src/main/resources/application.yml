@@ -5,11 +5,11 @@
 server:
   contextPath: /
 
-gitlab:
-  api:
-    prefix: http://gitlab.yit.com/api/v3
-  project:
-    name: prd
-    path: javayuanjian%2F${gitlab.project.name}
-  auth:
-    private_token: _Wk4XsmrGzikACbLCtXR
+git:
+  uri: http://gitlab.yit.com/javayuanjian/prd.git
+  user: javayuanjian
+  pwd: cliveyuan
+
+gitprd:
+  cfg:
+    root_path_name: gitPRD

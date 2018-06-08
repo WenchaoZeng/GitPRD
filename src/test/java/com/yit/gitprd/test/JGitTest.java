@@ -39,7 +39,7 @@ public class JGitTest {
         String userHome = SystemUtils.getUserHome();
         rootPath = userHome + "/" + PRD_ROOT_NAME;
         repoFile = new File(rootPath);
-        masterPath = rootPath + "/master" ;
+        masterPath = rootPath + "/master";
         if (!repoFile.exists()) {
             repoFile.mkdirs();
         }
@@ -49,7 +49,7 @@ public class JGitTest {
     @Test
     public void cloneTest() throws GitAPIException {
         String localFolderName = "master";
-       Git.cloneRepository()
+        Git.cloneRepository()
                 .setURI(GIT_URI)
                 .setDirectory(new File(rootPath + "/" + localFolderName))
                 .setCredentialsProvider(upcp)
@@ -75,12 +75,14 @@ public class JGitTest {
                 .setName("onSale")
                 .call();
     }
+
     @Test
     public void switchExistBranch() throws GitAPIException {
         git.checkout()
-                .setName("onSale")
+                .setName("master")
                 .call();
     }
+
     @Test
     public void createRemoteBranch() throws GitAPIException {
 
@@ -89,39 +91,46 @@ public class JGitTest {
                 .call();
         PushResult pushResult = iterable.iterator().next();
         RemoteRefUpdate.Status status
-                = pushResult.getRemoteUpdate( "refs/heads/jGit" ).getStatus();
+                = pushResult.getRemoteUpdate("refs/heads/jGit").getStatus();
         System.out.println(status.toString());
     }
 
     @Test
     public void getStatus() throws GitAPIException {
         Status status = git.status().call();
-        Set<String> untracked = status.getUntracked();//未添加
-        Set<String> changed = status.getChanged(); //变动
-        Set<String> modified = status.getModified(); //修改->与远程有不同的
-        Set<String> conflicting = status.getConflicting();//冲突
-        System.out.println("untracked: " + untracked);
-        System.out.println("changed: " + changed);
-        System.out.println("modified: " + modified);
-        System.out.println("conflicting: " + conflicting);
+        System.out.println("Added: " + status.getAdded());
+        System.out.println("Changed: " + status.getChanged());//变动
+        System.out.println("Conflicting: " + status.getConflicting());//冲突
+        System.out.println("ConflictingStageState: " + status.getConflictingStageState());
+        System.out.println("IgnoredNotInIndex: " + status.getIgnoredNotInIndex());
+        System.out.println("Missing: " + status.getMissing());
+        System.out.println("Modified: " + status.getModified()); //修改->与远程有不同的
+        System.out.println("Removed: " + status.getRemoved());
+        System.out.println("Untracked: " + status.getUntracked());//未添加
+        System.out.println("UntrackedFolders: " + status.getUntrackedFolders());
+        System.out.println("hasUncommittedChanges: " + status.hasUncommittedChanges());
     }
 
     @Test
-    public void add()throws GitAPIException {
-        git.add().addFilepattern(".").call();
+    public void add() throws GitAPIException {
+        git.add().addFilepattern(".")
+                //.setUpdate(true)
+                .call();
     }
+
     @Test
-    public void commit()throws GitAPIException {
+    public void commit() throws GitAPIException {
         String commitMsg = "Using jGit";
-        git.commit().setMessage(SystemUtils.getUserName() + " :" +commitMsg).call();
+        git.commit().setMessage(SystemUtils.getUserName() + " :" + commitMsg).call();
     }
+
     @Test
     public void push() throws GitAPIException {
 
         Iterable<PushResult> iterable = git.push()
                 .setCredentialsProvider(upcp)
                 .call();
-        iterable.forEach(pushResult -> System.out.println(pushResult.getRemoteUpdate("refs/heads/jGit")));
+        //iterable.forEach(pushResult -> System.out.println(pushResult.getRemoteUpdate("refs/heads/jGit")));
     }
 
     @Test
@@ -136,7 +145,7 @@ public class JGitTest {
                 .call();
         PushResult pushResult = iterable.iterator().next();
         RemoteRefUpdate.Status status
-                = pushResult.getRemoteUpdate( "refs/tags/" + tagName ).getStatus();
+                = pushResult.getRemoteUpdate("refs/tags/" + tagName).getStatus();
         System.out.println(status.toString());
     }
 
@@ -146,6 +155,7 @@ public class JGitTest {
         List<String> result = git.branchDelete().setBranchNames(branchName).call();
         System.out.println(result);
     }
+
     @Test
     public void deleteRemoteBranch() throws GitAPIException {
         String branchName = "onSale";
@@ -153,6 +163,7 @@ public class JGitTest {
         System.out.println(result);
         git.push().call();
     }
+
     @Test
     public void pull() throws GitAPIException {
         PullResult pullResult = git.pull()
@@ -161,6 +172,7 @@ public class JGitTest {
                 .call();
         System.out.println(pullResult);
     }
+
     @Test
     public void reset() throws GitAPIException {
         Ref ref = git.reset()
