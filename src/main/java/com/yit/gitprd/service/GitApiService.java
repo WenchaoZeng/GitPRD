@@ -173,6 +173,23 @@ public class GitApiService {
         }
     }
 
+    /**
+     * 切换分支
+     *
+     * @param branchName
+     * @param targetBranchName
+     * @param createBranch
+     * @throws GitAPIException
+     */
+    public void switchBranch(String branchName, String targetBranchName, Boolean createBranch)throws GitAPIException {
+        try (Git git = gitBranch(branchName)) {
+            git.checkout()
+                    .setName(targetBranchName)
+                    .setCreateBranch(createBranch)
+                    .call();
+        }
+    }
+
 
     //-- private methods
 

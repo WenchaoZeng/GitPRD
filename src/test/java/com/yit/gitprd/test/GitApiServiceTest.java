@@ -31,4 +31,9 @@ public class GitApiServiceTest {
         List<Branch> branches = gitApiService.localBranches();
         branches.forEach(b -> System.out.println(b.getName()));
     }
+
+    @Test
+    public void switchBranch() throws GitAPIException {
+        gitApiService.switchBranch("onSale2","on_sale", true);
+    }
 }
