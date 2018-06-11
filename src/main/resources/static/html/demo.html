@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>demo</title>
+</head>
+<script src="../js/jquery.min.js"></script>
+<script>
+function testApiRequest() {
+   $.post("/api/getAllBranch",{}, function (result) {
+       $("#result").html(result.data)
+   });
+}
+</script>
+
+<body>
+<button onclick="testApiRequest()">testRequest</button>
+<a id="result"></a>
+</body>
+
+</html>
