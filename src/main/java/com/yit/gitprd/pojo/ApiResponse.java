@@ -34,6 +34,9 @@ public class ApiResponse implements Serializable {
         return new ApiResponse(false, null, null);
     }
 
+    public static ApiResponse newSuccessInstance() {
+        return ApiResponse.newSuccessInstance(null);
+    }
     public static ApiResponse newSuccessInstance(Object data) {
         return new ApiResponse(true, null, data);
     }

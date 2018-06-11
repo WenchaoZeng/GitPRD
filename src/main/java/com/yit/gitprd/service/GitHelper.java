@@ -26,6 +26,9 @@ public class GitHelper {
     @Value("${gitprd.cfg.root_path_name}")
     private String rootPathName;
 
+    @Value("${gitprd.server_uri}")
+    private String prdServiceURI;
+
     private UsernamePasswordCredentialsProvider credentialsProvider;
 
     public String getUri() {
@@ -66,5 +69,9 @@ public class GitHelper {
             }
         }
         return credentialsProvider;
+    }
+
+    public String getPrdServiceURI() {
+        return prdServiceURI;
     }
 }

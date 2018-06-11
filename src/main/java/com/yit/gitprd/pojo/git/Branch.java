@@ -1,6 +1,6 @@
 package com.yit.gitprd.pojo.git;
 
-import org.eclipse.jgit.lib.Ref;
+import java.util.Date;
 
 /**
  * @author: clive
@@ -9,20 +9,18 @@ import org.eclipse.jgit.lib.Ref;
  */
 public class Branch {
 
-    private Ref ref;
     private String name;
+    private Type type;
+    private Date lastModifiedTime;
+    private String lastCommitAuthor;
+    private String lastComment;
 
-
+    public enum Type {
+        LOCAL, REMOTE
+    }
 
     //-----
 
-    public Ref getRef() {
-        return ref;
-    }
-
-    public void setRef(Ref ref) {
-        this.ref = ref;
-    }
 
     public String getName() {
         return name;
@@ -30,5 +28,37 @@ public class Branch {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public Date getLastModifiedTime() {
+        return lastModifiedTime;
+    }
+
+    public void setLastModifiedTime(Date lastModifiedTime) {
+        this.lastModifiedTime = lastModifiedTime;
+    }
+
+    public String getLastCommitAuthor() {
+        return lastCommitAuthor;
+    }
+
+    public void setLastCommitAuthor(String lastCommitAuthor) {
+        this.lastCommitAuthor = lastCommitAuthor;
+    }
+
+    public String getLastComment() {
+        return lastComment;
+    }
+
+    public void setLastComment(String lastComment) {
+        this.lastComment = lastComment;
     }
 }

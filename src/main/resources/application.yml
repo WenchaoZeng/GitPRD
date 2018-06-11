@@ -14,3 +14,4 @@ gitprd:
   cfg:
     # gitPRD workspace path in /Users/{user}/
     root_path_name: gitPRD
+  server_uri: http://prd2.yit.com

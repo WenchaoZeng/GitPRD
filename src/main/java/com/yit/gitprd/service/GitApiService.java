@@ -4,21 +4,27 @@ import com.yit.gitprd.exception.GitRuntimeException;
 import com.yit.gitprd.pojo.git.Branch;
 import com.yit.gitprd.pojo.git.GitStatus;
 import com.yit.gitprd.utils.SystemUtils;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.ListBranchCommand;
-import org.eclipse.jgit.api.ResetCommand;
-import org.eclipse.jgit.api.Status;
+import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.StoredConfig;
+import org.eclipse.jgit.transport.PushResult;
+import org.eclipse.jgit.transport.RefSpec;
+import org.eclipse.jgit.transport.RemoteRefUpdate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import static org.eclipse.jgit.lib.ConfigConstants.CONFIG_BRANCH_SECTION;
+import static org.eclipse.jgit.lib.ConfigConstants.CONFIG_REMOTE_SECTION;
 
 /**
  * 操作git by jGit
@@ -52,36 +58,44 @@ public class GitApiService {
     }
 
     /**
-     * 本地分支
+     * 获取远程分支
      *
      * @return
      * @throws GitAPIException
      */
-    public List<Branch> localBranches() throws GitAPIException {
-        return branches(null);
-    }
-
-    /**
-     * 所有分支
-     *
-     * @return
-     * @throws GitAPIException
-     */
-    public List<Branch> allBranches() throws GitAPIException {
-        return branches(ListBranchCommand.ListMode.ALL);
+    public List<Branch> remoteBranches() throws GitAPIException {
+        return branches(ListBranchCommand.ListMode.REMOTE);
     }
 
     /**
      * 创建本地分支
      *
      * @param branchName
+     * @param refBranchName
      * @throws GitAPIException
      */
-    public void createLocalBranch(String branchName) throws GitAPIException {
+    public void createBranch(String branchName, String refBranchName) throws GitAPIException {
         try (Git git = gitBranch(branchName)) {
             git.checkout()
                     .setCreateBranch(true)
+                    .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.SET_UPSTREAM)
                     .setName(branchName)
+                    .setStartPoint("origin/" + refBranchName)
+                    .call();
+            git.push()
+                    .setCredentialsProvider(gitHelper.getCredentialsProvider())
+                    .setRemote("origin")
+                    .call();
+        }
+    }
+
+    public void checkout(String branchName) throws GitAPIException {
+        try (Git git = gitBranch(branchName)) {
+            git.checkout()
+                    .setCreateBranch(true)
+                    .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK)
+                    .setName(branchName)
+                    .setStartPoint("origin/" + branchName)
                     .call();
         }
     }
@@ -98,6 +112,7 @@ public class GitApiService {
             Status status = git.status().call();
             GitStatus gitStatus = new GitStatus();
             gitStatus.setExistUnCommit(status.hasUncommittedChanges());
+            gitStatus.setBranchName(branchName);
             gitStatus.setStatus(status);
             return gitStatus;
         }
@@ -123,6 +138,20 @@ public class GitApiService {
     }
 
     /**
+     * 拉取更新
+     *
+     * @param branchName 分支名
+     * @throws GitAPIException
+     */
+    public void pull(String branchName) throws GitAPIException {
+        try (Git git = gitBranch(branchName)) {
+            git.pull().setRebase(true)
+                    .setCredentialsProvider(gitHelper.getCredentialsProvider())
+                    .call();
+        }
+    }
+
+    /**
      * 提交到本地
      *
      * @param branchName
@@ -142,10 +171,21 @@ public class GitApiService {
      * @param branchName
      * @throws GitAPIException
      */
-    public void push(String branchName) throws GitAPIException {
+    public boolean push(String branchName) throws GitAPIException {
         try (Git git = gitBranch(branchName)) {
-            git.push().setCredentialsProvider(gitHelper.getCredentialsProvider()).call();
+            Iterable<PushResult> results = git.push()
+                    .setCredentialsProvider(gitHelper.getCredentialsProvider())
+                    .call();
+            Iterator<PushResult> iterator = results.iterator();
+            if (iterator.hasNext()) {
+                PushResult push = iterator.next();
+                RemoteRefUpdate remoteUpdate = push.getRemoteUpdate("refs/heads/" + branchName);
+                logger.info("push==> branchName={},remoteUpdate.status={}", branchName, remoteUpdate.getStatus());
+                return RemoteRefUpdate.Status.OK.equals(remoteUpdate.getStatus() )
+                        || RemoteRefUpdate.Status.UP_TO_DATE.equals(remoteUpdate.getStatus());
+            }
         }
+        return false;
     }
 
     /**
@@ -178,15 +218,55 @@ public class GitApiService {
      *
      * @param branchName
      * @param targetBranchName
-     * @param createBranch
      * @throws GitAPIException
      */
-    public void switchBranch(String branchName, String targetBranchName, Boolean createBranch)throws GitAPIException {
+    public void switchBranch(String branchName, String targetBranchName) throws GitAPIException {
         try (Git git = gitBranch(branchName)) {
             git.checkout()
                     .setName(targetBranchName)
-                    .setCreateBranch(createBranch)
+//                    .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK)
+                    .setCreateBranch(true)
+                    .setStartPoint("origin/" + targetBranchName)
                     .call();
+        }
+    }
+
+    /**
+     * 添加标签
+     *
+     * @param branchName
+     * @throws GitAPIException
+     */
+    public void addTag(String branchName) throws GitAPIException {
+        try (Git git = gitBranch(branchName)) {
+            String tagName = branchName +"_"+ System.currentTimeMillis();
+            String msg = String.format("deleted by %s, based on %s", SystemUtils.getUserName(), branchName);
+            //create local tag
+            git.tag()
+                    .setName(tagName)
+                    .setMessage(msg)
+                    .call();
+            //push to remote
+            git.push().setPushTags()
+                    .setCredentialsProvider(gitHelper.getCredentialsProvider())
+                    .call();
+        }
+    }
+
+    /**
+     * 删除远程分支
+     *
+     * @param branchName
+     * @throws GitAPIException
+     */
+    public void deleteRemoteBranch(String branchName) throws GitAPIException {
+        try (Git git = gitBranch(branchName)) {
+            RefSpec refSpec = new RefSpec()
+                    .setSource(null)
+                    .setDestination("refs/heads/" + branchName);
+            git.push()
+                    .setCredentialsProvider(gitHelper.getCredentialsProvider())
+                    .setRefSpecs(refSpec).setRemote("origin").call();
         }
     }
 
@@ -199,10 +279,21 @@ public class GitApiService {
             List<Ref> refs = git.branchList()
                     .setListMode(listMode)
                     .call();
+            if (refs == null) return list;
+            String localPrefix = "refs/heads/";
+            String remotePrefix = "refs/remotes/origin/";
             for (Ref ref : refs) {
                 Branch branch = new Branch();
-                branch.setName(ref.getName());
-                branch.setRef(ref);
+                String refName = ref.getName();
+
+                if (refName.startsWith(localPrefix)) {
+                    branch.setType(Branch.Type.LOCAL);
+                    branch.setName(refName.replace(localPrefix, ""));
+                } else if (refName.startsWith(remotePrefix)) {
+                    branch.setType(Branch.Type.REMOTE);
+                    branch.setName(refName.replace(remotePrefix, ""));
+                }
+
                 list.add(branch);
             }
         }
@@ -232,7 +323,7 @@ public class GitApiService {
     //添加
     private void add(String branchName, boolean update) throws GitAPIException {
         try (Git git = gitBranch(branchName)) {
-            git.add().setUpdate(update).call();
+            git.add().addFilepattern(".").setUpdate(update).call();
         }
     }
 }

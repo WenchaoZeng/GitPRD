@@ -23,4 +23,14 @@ public class FileUtil extends FileUtils {
         if (file.exists()) return;
         file.mkdirs();
     }
+
+    /**
+     * 路径是否存在
+     *
+     * @param path
+     * @return
+     */
+    public static boolean exist(String path) {
+        return new File(path).exists();
+    }
 }
