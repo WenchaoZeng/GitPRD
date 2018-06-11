@@ -89,6 +89,12 @@ public class GitApiService {
         }
     }
 
+    /**
+     * 切换分支
+     *
+     * @param branchName
+     * @throws GitAPIException
+     */
     public void checkout(String branchName) throws GitAPIException {
         try (Git git = gitBranch(branchName)) {
             git.checkout()
@@ -214,24 +220,6 @@ public class GitApiService {
     }
 
     /**
-     * 切换分支
-     *
-     * @param branchName
-     * @param targetBranchName
-     * @throws GitAPIException
-     */
-    public void switchBranch(String branchName, String targetBranchName) throws GitAPIException {
-        try (Git git = gitBranch(branchName)) {
-            git.checkout()
-                    .setName(targetBranchName)
-//                    .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK)
-                    .setCreateBranch(true)
-                    .setStartPoint("origin/" + targetBranchName)
-                    .call();
-        }
-    }
-
-    /**
      * 添加标签
      *
      * @param branchName
@@ -316,7 +304,7 @@ public class GitApiService {
             return Git.open(new File(gitPath));
         } catch (IOException e) {
             logger.error("get git error", e);
-            throw new GitRuntimeException("打开仓库异常");
+            throw new IllegalArgumentException("分支不存在");
         }
     }
 

@@ -76,7 +76,7 @@ public class GitPrdServiceImpl implements GitPrdService {
     }
 
     private boolean branchContains(List<Branch> list, Branch branch) {
-        return list.stream().filter(b -> b.getName().equals(branch.getName())).findAny().isPresent();
+        return list.stream().anyMatch(b -> b.getName().equals(branch.getName()));
     }
 
     @Override
@@ -89,6 +89,7 @@ public class GitPrdServiceImpl implements GitPrdService {
         //推送到远程
 
         String localBranchPath = gitHelper.getBranchesPath() + "/" + branchName;
+        Assert.isTrue(!FileUtil.exist(localBranchPath), "该PRD名称已存在,请换个名称");
         gitApiService.cloneBranch(localBranchPath);
         gitApiService.createBranch(branchName, refBranchName);
         //删除重新克隆 (因为jGit不支持 push -u origin branch_name)
@@ -117,6 +118,7 @@ public class GitPrdServiceImpl implements GitPrdService {
     public void resetModify(String branchName) throws GitAPIException {
         Assert.isTrue(StringUtil.isNotBlank(branchName), GitPrdCons.BRANCH_NAME_NULL_MSG);
         gitApiService.reset(branchName);
+        //删除和添加的数据
     }
 
     @Override
@@ -174,6 +176,8 @@ public class GitPrdServiceImpl implements GitPrdService {
     @Override
     public String getOnlineUrl(String branchName) {
         Assert.isTrue(StringUtil.isNotBlank(branchName), GitPrdCons.BRANCH_NAME_NULL_MSG);
-        return gitHelper.getPrdServiceURI() + "/" + branchName;
+        String url = gitHelper.getPrdServiceURI() + "/" + branchName;
+        SystemUtils.browserUrl(url);
+        return url;
     }
 }

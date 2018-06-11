@@ -6,6 +6,8 @@ import com.yit.gitprd.pojo.ApiResponse;
 import com.yit.gitprd.pojo.bean.BranchParam;
 import com.yit.gitprd.service.GitPrdService;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api")
 public class GitPrdApiController {
 
+    private static final Logger logger = LoggerFactory.getLogger(GitPrdApiController.class);
+
     @Autowired
     private GitPrdService gitPrdService;
 
@@ -29,8 +33,10 @@ public class GitPrdApiController {
         } catch (IllegalArgumentException e) {
             return ApiResponse.newFailInstance(e.getMessage());
         } catch (GitAPIException e) {
+            logger.error("GIT_API_ERROR", e);
             return ApiResponse.newFailInstance(GitPrdCons.GIT_API_ERROR);
         } catch (Exception e) {
+            logger.error("SYS_ERROR", e);
             return ApiResponse.newFailInstance(GitPrdCons.SYS_ERROR);
         }
     }
@@ -43,8 +49,10 @@ public class GitPrdApiController {
         } catch (IllegalArgumentException e) {
             return ApiResponse.newFailInstance(e.getMessage());
         } catch (GitAPIException e) {
+            logger.error("GIT_API_ERROR", e);
             return ApiResponse.newFailInstance(GitPrdCons.GIT_API_ERROR);
         } catch (Exception e) {
+            logger.error("SYS_ERROR", e);
             return ApiResponse.newFailInstance(GitPrdCons.SYS_ERROR);
         }
     }
@@ -57,8 +65,10 @@ public class GitPrdApiController {
         } catch (IllegalArgumentException e) {
             return ApiResponse.newFailInstance(e.getMessage());
         } catch (GitAPIException e) {
+            logger.error("GIT_API_ERROR", e);
             return ApiResponse.newFailInstance(GitPrdCons.GIT_API_ERROR);
         } catch (Exception e) {
+            logger.error("SYS_ERROR", e);
             return ApiResponse.newFailInstance(GitPrdCons.SYS_ERROR);
         }
     }
@@ -71,8 +81,10 @@ public class GitPrdApiController {
         } catch (IllegalArgumentException e) {
             return ApiResponse.newFailInstance(e.getMessage());
         } catch (GitAPIException e) {
+            logger.error("GIT_API_ERROR", e);
             return ApiResponse.newFailInstance(GitPrdCons.GIT_API_ERROR);
         } catch (Exception e) {
+            logger.error("SYS_ERROR", e);
             return ApiResponse.newFailInstance(GitPrdCons.SYS_ERROR);
         }
     }
@@ -84,8 +96,10 @@ public class GitPrdApiController {
         } catch (IllegalArgumentException e) {
             return ApiResponse.newFailInstance(e.getMessage());
         } catch (GitAPIException e) {
+            logger.error("GIT_API_ERROR", e);
             return ApiResponse.newFailInstance(GitPrdCons.GIT_API_ERROR);
         } catch (Exception e) {
+            logger.error("SYS_ERROR", e);
             return ApiResponse.newFailInstance(GitPrdCons.SYS_ERROR);
         }
     }
@@ -98,8 +112,10 @@ public class GitPrdApiController {
         } catch (IllegalArgumentException e) {
             return ApiResponse.newFailInstance(e.getMessage());
         } catch (GitAPIException e) {
+            logger.error("GIT_API_ERROR", e);
             return ApiResponse.newFailInstance(GitPrdCons.GIT_API_ERROR);
         } catch (Exception e) {
+            logger.error("SYS_ERROR", e);
             return ApiResponse.newFailInstance(GitPrdCons.SYS_ERROR);
         }
     }
@@ -112,8 +128,10 @@ public class GitPrdApiController {
         } catch (IllegalArgumentException e) {
             return ApiResponse.newFailInstance(e.getMessage());
         } catch (GitAPIException e) {
+            logger.error("GIT_API_ERROR", e);
             return ApiResponse.newFailInstance(GitPrdCons.GIT_API_ERROR);
         } catch (Exception e) {
+            logger.error("SYS_ERROR", e);
             return ApiResponse.newFailInstance(GitPrdCons.SYS_ERROR);
         }
     }
@@ -126,8 +144,10 @@ public class GitPrdApiController {
         } catch (IllegalArgumentException e) {
             return ApiResponse.newFailInstance(e.getMessage());
         } catch (GitAPIException e) {
+            logger.error("GIT_API_ERROR", e);
             return ApiResponse.newFailInstance(GitPrdCons.GIT_API_ERROR);
         } catch (Exception e) {
+            logger.error("SYS_ERROR", e);
             return ApiResponse.newFailInstance(GitPrdCons.SYS_ERROR);
         }
     }
@@ -140,8 +160,10 @@ public class GitPrdApiController {
         } catch (IllegalArgumentException e) {
             return ApiResponse.newFailInstance(e.getMessage());
         } catch (GitAPIException e) {
+            logger.error("GIT_API_ERROR", e);
             return ApiResponse.newFailInstance(GitPrdCons.GIT_API_ERROR);
         } catch (Exception e) {
+            logger.error("SYS_ERROR", e);
             return ApiResponse.newFailInstance(GitPrdCons.SYS_ERROR);
         }
     }
@@ -153,8 +175,10 @@ public class GitPrdApiController {
         } catch (IllegalArgumentException e) {
             return ApiResponse.newFailInstance(e.getMessage());
         } catch (GitAPIException e) {
+            logger.error("GIT_API_ERROR", e);
             return ApiResponse.newFailInstance(GitPrdCons.GIT_API_ERROR);
         } catch (Exception e) {
+            logger.error("SYS_ERROR", e);
             return ApiResponse.newFailInstance(GitPrdCons.SYS_ERROR);
         }
     }

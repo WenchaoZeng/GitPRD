@@ -27,8 +27,9 @@ public class GitApiServiceTest {
     private GitApiService gitApiService;
 
     @Test
-    public void switchBranch() throws GitAPIException {
-        gitApiService.switchBranch("onSale2","on_sale_1");
+    public void remoteBranches() throws GitAPIException {
+        List<Branch> list = gitApiService.remoteBranches();
+        list.forEach(b-> System.out.println(b.getName()));
     }
     @Test
     public void deleteBranch() throws GitAPIException {

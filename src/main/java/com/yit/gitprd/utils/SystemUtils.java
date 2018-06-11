@@ -4,7 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
+import java.awt.*;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * @author: clive
@@ -37,6 +40,26 @@ public class SystemUtils {
             Runtime.getRuntime().exec(command);
         } catch (IOException e) {
             logger.error("openInFinder error: path=" + path, e);
+        }
+    }
+
+    /**
+     * 用默认浏览器打开
+     *
+     * @param url
+     */
+    public static void browserUrl(String url){
+        if (Desktop.isDesktopSupported()){
+            try {
+                URI uri = new URI(url);
+                Desktop desktop = Desktop.getDesktop(); //创建desktop对象
+                //调用默认浏览器打开指定URL
+                desktop.browse(uri);
+            } catch (Exception e) {
+                logger.error("browserUrl error: url=" + url, e);
+            }
+        } else {
+            throw new IllegalArgumentException("桌面不支持打开此地址");
         }
     }
 
