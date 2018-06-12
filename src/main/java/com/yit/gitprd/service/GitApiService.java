@@ -296,15 +296,19 @@ public class GitApiService {
         return list;
     }
 
+
     /**
      * 获取更新
      *
+     * @param dryRun 干跑 -> 白跑一趟
+     *               Show what would be done, without making any changes.
      * @return
      * @throws GitAPIException
      */
-    public FetchResult fetch() throws GitAPIException {
+    public FetchResult fetch(Boolean dryRun) throws GitAPIException {
         try (Git git = gitMaster()) {
             return git.fetch()
+                    .setDryRun(dryRun)
                     .setCredentialsProvider(gitHelper.getCredentialsProvider())
                     .call();
         }

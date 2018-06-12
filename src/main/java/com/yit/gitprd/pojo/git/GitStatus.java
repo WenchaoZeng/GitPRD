@@ -13,10 +13,14 @@ public class GitStatus {
 
     private String branchName;
     /**
-     * 存在未提交的改变
+     * 本地是否有提交
      */
     private Boolean hasUncommittedChanges;
 
+    /**
+     * 远程是否有更新
+     */
+    private Boolean hasUnPulledChanges;
 
     //--
 
@@ -42,5 +46,13 @@ public class GitStatus {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public Boolean getHasUnPulledChanges() {
+        return hasUnPulledChanges;
+    }
+
+    public void setHasUnPulledChanges(Boolean hasUnPulledChanges) {
+        this.hasUnPulledChanges = hasUnPulledChanges;
     }
 }

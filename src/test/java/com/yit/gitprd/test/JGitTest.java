@@ -5,6 +5,7 @@ import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.filter.RevFilter;
 import org.eclipse.jgit.transport.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -188,6 +189,7 @@ public class JGitTest {
     public void fetch() throws GitAPIException {
         FetchResult result = git.fetch()
                 .setCredentialsProvider(upcp)
+//                .setDryRun(true)
                 .call();
         TrackingRefUpdate trackingRefUpdate = result.getTrackingRefUpdate("refs/remotes/origin/gift");
         System.out.println(result);
@@ -197,7 +199,9 @@ public class JGitTest {
     }
     @Test
     public void log() throws GitAPIException {
-        Iterable<RevCommit> revCommits = git.log().setMaxCount(1).call();
+        RevFilter revFilter;
+        Iterable<RevCommit> revCommits = git.log()
+                .setMaxCount(1).call();
         System.out.println(revCommits);
         Iterator<RevCommit> iterator = revCommits.iterator();
         if (iterator.hasNext()) {

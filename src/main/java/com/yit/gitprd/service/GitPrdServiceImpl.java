@@ -8,6 +8,8 @@ import com.yit.gitprd.utils.FileUtil;
 import com.yit.gitprd.utils.StringUtil;
 import com.yit.gitprd.utils.SystemUtils;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.transport.FetchResult;
+import org.eclipse.jgit.transport.TrackingRefUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -126,11 +128,21 @@ public class GitPrdServiceImpl implements GitPrdService {
         List<GitStatus> statuses = new ArrayList<>();
         List<File> branchList = getLocalBranchedFiles();
         if (branchList == null) return statuses;
+        FetchResult fetchResult = gitApiService.fetch(true);
+
         for (File file : branchList) {
             String branchName = file.getName();
-            statuses.add(gitApiService.status(branchName));
+            GitStatus status = gitApiService.status(branchName);
+            status.setHasUnPulledChanges(hasUpdates(fetchResult, branchName));
+            statuses.add(status);
         }
         return statuses;
+    }
+
+    private boolean hasUpdates(FetchResult fetchResult, String branchName) {
+        if (fetchResult == null) return false;
+        TrackingRefUpdate trackingRefUpdate = fetchResult.getTrackingRefUpdate("refs/remotes/origin/" + branchName);
+        return trackingRefUpdate != null;
     }
 
     private List<File> getLocalBranchedFiles() {
@@ -151,6 +163,7 @@ public class GitPrdServiceImpl implements GitPrdService {
         Assert.isTrue(StringUtil.isNotBlank(branchName), GitPrdCons.BRANCH_NAME_NULL_MSG);
         //拉取更新 (先撤销改动再拉取,防止冲突)
         this.resetModify(branchName);
+        gitApiService.fetch(false);
         gitApiService.pull(branchName);
     }
 
