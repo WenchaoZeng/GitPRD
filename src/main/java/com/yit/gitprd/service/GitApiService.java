@@ -1,30 +1,22 @@
 package com.yit.gitprd.service;
 
-import com.yit.gitprd.exception.GitRuntimeException;
 import com.yit.gitprd.pojo.git.Branch;
 import com.yit.gitprd.pojo.git.GitStatus;
 import com.yit.gitprd.utils.SystemUtils;
 import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.lib.StoredConfig;
-import org.eclipse.jgit.transport.PushResult;
-import org.eclipse.jgit.transport.RefSpec;
-import org.eclipse.jgit.transport.RemoteRefUpdate;
+import org.eclipse.jgit.transport.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import static org.eclipse.jgit.lib.ConfigConstants.CONFIG_BRANCH_SECTION;
-import static org.eclipse.jgit.lib.ConfigConstants.CONFIG_REMOTE_SECTION;
 
 /**
  * 操作git by jGit
@@ -117,7 +109,7 @@ public class GitApiService {
         try (Git git = gitBranch(branchName)) {
             Status status = git.status().call();
             GitStatus gitStatus = new GitStatus();
-            gitStatus.setExistUnCommit(status.hasUncommittedChanges());
+            gitStatus.setHasUncommittedChanges(status.hasUncommittedChanges());
             gitStatus.setBranchName(branchName);
             gitStatus.setStatus(status);
             return gitStatus;
@@ -220,6 +212,21 @@ public class GitApiService {
     }
 
     /**
+     * 清除本地添加
+     *
+     * @param branchName
+     * @throws GitAPIException
+     */
+    public void clean(String branchName) throws GitAPIException {
+        try (Git git = gitBranch(branchName)) {
+            git.clean()
+                    .setCleanDirectories(true)
+                    .setForce(true)
+                    .call();
+        }
+    }
+
+    /**
      * 添加标签
      *
      * @param branchName
@@ -287,6 +294,21 @@ public class GitApiService {
         }
 
         return list;
+    }
+
+    /**
+     * 获取更新
+     *
+     * @return
+     * @throws GitAPIException
+     */
+    public FetchResult fetch() throws GitAPIException {
+        try (Git git = gitMaster()) {
+            return git.fetch()
+                    .setCredentialsProvider(gitHelper.getCredentialsProvider())
+                    .call();
+        }
+
     }
 
     //master分支

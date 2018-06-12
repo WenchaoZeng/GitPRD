@@ -46,6 +46,7 @@ public interface GitPrdService {
 
     /**
      * 撤销本地改动
+     * 包括: 新增文件(夹), 修改内容, 删除文件
      *
      * @param branchName 分支名
      */

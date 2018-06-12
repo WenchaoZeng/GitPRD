@@ -4,14 +4,14 @@ import com.yit.gitprd.utils.SystemUtils;
 import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.transport.PushResult;
-import org.eclipse.jgit.transport.RemoteRefUpdate;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.transport.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -120,8 +120,10 @@ public class JGitTest {
 
     @Test
     public void commit() throws GitAPIException {
-        String commitMsg = "Using jGit";
-        git.commit().setMessage(SystemUtils.getUserName() + " :" + commitMsg).call();
+        String commitMsg = "test author";
+        git.commit()
+                .setAuthor(SystemUtils.getUserName(), SystemUtils.getUserName() + "@yit.com")
+                .setMessage(SystemUtils.getUserName() + " :" + commitMsg).call();
     }
 
     @Test
@@ -180,6 +182,28 @@ public class JGitTest {
                 .call();
         System.out.println(ref);
 
+    }
+
+    @Test
+    public void fetch() throws GitAPIException {
+        FetchResult result = git.fetch()
+                .setCredentialsProvider(upcp)
+                .call();
+        TrackingRefUpdate trackingRefUpdate = result.getTrackingRefUpdate("refs/remotes/origin/gift");
+        System.out.println(result);
+        if (trackingRefUpdate != null) {
+            System.out.println(result);
+        }
+    }
+    @Test
+    public void log() throws GitAPIException {
+        Iterable<RevCommit> revCommits = git.log().setMaxCount(1).call();
+        System.out.println(revCommits);
+        Iterator<RevCommit> iterator = revCommits.iterator();
+        if (iterator.hasNext()) {
+            RevCommit rev = iterator.next();
+            System.out.println("Commit: " + rev  + ", name: " + rev.getName() + ", id: " + rev.getId().getName());
+        }
     }
 
 }

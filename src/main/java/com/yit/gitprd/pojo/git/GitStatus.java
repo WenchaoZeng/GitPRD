@@ -9,13 +9,14 @@ import org.eclipse.jgit.api.Status;
  */
 public class GitStatus {
 
-    private String branchName;
-
     private Status status;
+
+    private String branchName;
     /**
-     * 存在未提交文件: 新添加,新改动
+     * 存在未提交的改变
      */
-    private Boolean existUnCommit;
+    private Boolean hasUncommittedChanges;
+
 
     //--
 
@@ -27,19 +28,19 @@ public class GitStatus {
         this.branchName = branchName;
     }
 
+    public Boolean getHasUncommittedChanges() {
+        return hasUncommittedChanges;
+    }
+
+    public void setHasUncommittedChanges(Boolean hasUncommittedChanges) {
+        this.hasUncommittedChanges = hasUncommittedChanges;
+    }
+
     public Status getStatus() {
         return status;
     }
 
     public void setStatus(Status status) {
         this.status = status;
-    }
-
-    public Boolean getExistUnCommit() {
-        return existUnCommit;
-    }
-
-    public void setExistUnCommit(Boolean existUnCommit) {
-        this.existUnCommit = existUnCommit;
     }
 }

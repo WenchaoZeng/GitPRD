@@ -117,8 +117,8 @@ public class GitPrdServiceImpl implements GitPrdService {
     @Override
     public void resetModify(String branchName) throws GitAPIException {
         Assert.isTrue(StringUtil.isNotBlank(branchName), GitPrdCons.BRANCH_NAME_NULL_MSG);
-        gitApiService.reset(branchName);
-        //删除和添加的数据
+        gitApiService.reset(branchName);  //撤销本地删除和修改
+        gitApiService.clean(branchName);  //清除本地新增文件(夹)
     }
 
     @Override

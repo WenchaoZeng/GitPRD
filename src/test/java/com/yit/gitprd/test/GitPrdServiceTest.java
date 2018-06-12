@@ -46,7 +46,8 @@ public class GitPrdServiceTest {
     @Test
     public void status() throws GitAPIException {
         List<GitStatus> allBranchStatus = gitPrdService.getAllBranchStatus();
-        allBranchStatus.forEach(b-> System.out.printf("name: %s, hasCommit: %s \n", b.getBranchName(), b.getExistUnCommit().toString()));
+        allBranchStatus.forEach(b-> System.out.printf("name: %s, hasCommit: %s \n", b.getBranchName(),
+                b.getHasUncommittedChanges().toString()));
     }
     @Test
     public void commit() throws GitAPIException {

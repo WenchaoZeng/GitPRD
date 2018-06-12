@@ -1,6 +1,5 @@
 package com.yit.gitprd.controller;
 
-import com.yit.gitprd.cons.BranchListType;
 import com.yit.gitprd.cons.GitPrdCons;
 import com.yit.gitprd.pojo.ApiResponse;
 import com.yit.gitprd.pojo.bean.BranchParam;
@@ -9,7 +8,10 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author: clive

@@ -42,7 +42,7 @@ public class GitApiServiceTest {
     @Test
     public void status() throws GitAPIException {
         GitStatus gitStatus = gitApiService.status("onSale");
-        System.out.println(gitStatus.getExistUnCommit());
+        System.out.println(gitStatus.getHasUncommittedChanges());
         Status status = gitStatus.getStatus();
         System.out.println("Added: " + status.getAdded());
         System.out.println("Changed: " + status.getChanged());//变动
