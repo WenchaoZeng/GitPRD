@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSON;
 
 import com.yit.gitprd.cons.BranchListType;
 import com.yit.gitprd.pojo.ApiResponse;
-import com.yit.gitprd.pojo.git.Branch;
+import com.yit.gitprd.pojo.Branch;
 import com.yit.gitprd.service.GitPrdService;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.beans.factory.annotation.Autowired;

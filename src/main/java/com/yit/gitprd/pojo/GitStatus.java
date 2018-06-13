@@ -1,4 +1,4 @@
-package com.yit.gitprd.pojo.git;
+package com.yit.gitprd.pojo;
 
 import org.eclipse.jgit.api.Status;
 

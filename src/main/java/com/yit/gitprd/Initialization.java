@@ -55,7 +55,8 @@ public class Initialization implements InitializingBean {
             }
         } catch (GitAPIException e) {
             logger.error("cloneMasterBranch", e);
-            //TODO: 推送错误消息
+        } catch (Exception e) {
+            logger.error("error", e);
         }
     }
 }

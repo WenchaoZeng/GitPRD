@@ -1,9 +1,9 @@
 package com.yit.gitprd.websocket;
 
-import com.alibaba.fastjson.JSON;
 import com.yit.gitprd.cons.AppCons;
+import com.yit.gitprd.cons.GitPrdCons;
+import com.yit.gitprd.pojo.GitStatus;
 import com.yit.gitprd.pojo.Notice;
-import com.yit.gitprd.pojo.git.GitStatus;
 import com.yit.gitprd.service.GitPrdService;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.slf4j.Logger;
@@ -42,20 +42,20 @@ public class NoticeListener implements InitializingBean {
     private void asyncRun() {
         while (true) {
             logger.info("noticeTask . . .");
-            String content;
+            Notice notice;
             try {
                 List<GitStatus> allBranchStatus = gitPrdService.getAllBranchStatus();
-                content = JSON.toJSON(Notice.newBranchStatusNotice(allBranchStatus)).toString();
+                notice = Notice.newBranchStatusNotice(allBranchStatus);
             } catch (IllegalArgumentException e) {
-                content = JSON.toJSONString(Notice.newMsgNotice(e.getMessage()));
+                notice = Notice.newMsgNotice(e.getMessage());
             } catch (GitAPIException e) {
                 logger.error("getAllBranchStatus", e);
-                content = JSON.toJSONString(Notice.newMsgNotice("git api 异常"));
+                notice = Notice.newMsgNotice(GitPrdCons.GIT_API_ERROR);
             } catch (Exception e) {
                 logger.error("getAllBranchStatus", e);
-                content = JSON.toJSONString(Notice.newMsgNotice("系统异常"));
+                notice = Notice.newMsgNotice(GitPrdCons.SYS_ERROR);
             }
-            noticeSocket.sendNotice(content);
+            noticeSocket.sendNotice(notice);
             try {
                 Thread.sleep(AppCons.NOTICE_INTERVAL * 1000);
             } catch (InterruptedException e) {

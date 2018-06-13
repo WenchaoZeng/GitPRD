@@ -1,5 +1,7 @@
 package com.yit.gitprd.websocket;
 
+import com.alibaba.fastjson.JSON;
+import com.yit.gitprd.pojo.Notice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -28,7 +30,14 @@ public class NoticeSocket {
     }
 
     /**
-     * 发送消息
+     * 发送通知
+     * @param notice
+     */
+    public void sendNotice(Notice notice) {
+        sendNotice(JSON.toJSON(notice).toString());
+    }
+    /**
+     * 发送通知
      *
      * @param content
      */

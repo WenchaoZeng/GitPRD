@@ -2,7 +2,7 @@ package com.yit.gitprd.controller;
 
 import com.yit.gitprd.cons.GitPrdCons;
 import com.yit.gitprd.pojo.ApiResponse;
-import com.yit.gitprd.pojo.bean.BranchParam;
+import com.yit.gitprd.pojo.BranchParam;
 import com.yit.gitprd.service.GitPrdService;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.slf4j.Logger;

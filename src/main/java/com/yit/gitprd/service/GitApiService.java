@@ -1,7 +1,7 @@
 package com.yit.gitprd.service;
 
-import com.yit.gitprd.pojo.git.Branch;
-import com.yit.gitprd.pojo.git.GitStatus;
+import com.yit.gitprd.pojo.Branch;
+import com.yit.gitprd.pojo.GitStatus;
 import com.yit.gitprd.utils.SystemUtils;
 import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.errors.GitAPIException;

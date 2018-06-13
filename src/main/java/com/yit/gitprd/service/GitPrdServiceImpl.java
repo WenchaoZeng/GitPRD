@@ -2,8 +2,8 @@ package com.yit.gitprd.service;
 
 import com.yit.gitprd.cons.BranchListType;
 import com.yit.gitprd.cons.GitPrdCons;
-import com.yit.gitprd.pojo.git.Branch;
-import com.yit.gitprd.pojo.git.GitStatus;
+import com.yit.gitprd.pojo.Branch;
+import com.yit.gitprd.pojo.GitStatus;
 import com.yit.gitprd.utils.FileUtil;
 import com.yit.gitprd.utils.StringUtil;
 import com.yit.gitprd.utils.SystemUtils;

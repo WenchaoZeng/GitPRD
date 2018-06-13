@@ -1,4 +1,4 @@
-package com.yit.gitprd.pojo.bean;
+package com.yit.gitprd.pojo;
 
 import com.yit.gitprd.cons.BranchListType;
 
