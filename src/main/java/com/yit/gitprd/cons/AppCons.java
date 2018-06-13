@@ -18,4 +18,9 @@ public class AppCons {
     public static final String PROTOCOL = "http://";
 
     public final static String DEFAULT_URL = "/html/index.html";
+
+    /**
+     * 通知轮询间隔时间
+     */
+    public static final int NOTICE_INTERVAL = 10;
 }

@@ -19,7 +19,6 @@
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 <script src="/bootstrap/js/bootstrap.min.js"  crossorigin="anonymous"></script>
 <!-- 拉取推送 -->
-<iframe src="/html/push.html" hidden = hidden></iframe>
 <script src="/js/fetchData.js"></script>
 <body>
 
@@ -146,4 +145,12 @@
 	}
 </script>
 
+<script src="/js/websocket.js"></script>
+<script>
+	function noticeCallback(data) {
+		console.log("noticeType: " + data.type);
+		console.log(data.content);
+		//TODO: 处理逻辑:
+    }
+</script>
 </html>
