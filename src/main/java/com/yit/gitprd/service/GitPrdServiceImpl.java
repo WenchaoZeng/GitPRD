@@ -8,6 +8,7 @@ import com.yit.gitprd.utils.FileUtil;
 import com.yit.gitprd.utils.StringUtil;
 import com.yit.gitprd.utils.SystemUtils;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRefNameException;
 import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.TrackingRefUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +85,7 @@ public class GitPrdServiceImpl implements GitPrdService {
     @Override
     public void createBranch(String branchName, String refBranchName) throws GitAPIException, IOException {
         Assert.isTrue(StringUtil.isNotBlank(branchName), GitPrdCons.BRANCH_NAME_NULL_MSG);
+        Assert.isTrue(branchName.contains("/"), "名PRD称不能包含斜杠");
         Assert.isTrue(StringUtil.isNotBlank(refBranchName), "依赖PRD不能为空");
         //将项目拉下来命名为${branchName}
         //切换到分支${refBranchName} -> 如果依赖分支不是master
@@ -93,7 +95,13 @@ public class GitPrdServiceImpl implements GitPrdService {
         String localBranchPath = gitHelper.getBranchesPath() + "/" + branchName;
         Assert.isTrue(!FileUtil.exist(localBranchPath), "该PRD名称已存在,请换个名称");
         gitApiService.cloneBranch(localBranchPath);
-        gitApiService.createBranch(branchName, refBranchName);
+        try {
+            gitApiService.createBranch(branchName, refBranchName);
+        } catch (InvalidRefNameException e) {
+            //回滚
+            FileUtil.deleteDirectory(new File(gitHelper.getBranchesPath() + "/" + branchName));
+            throw new IllegalArgumentException(e.getMessage());
+        }
         //删除重新克隆 (因为jGit不支持 push -u origin branch_name)
         FileUtil.deleteDirectory(new File(gitHelper.getBranchesPath() + "/" + branchName));
         this.cloneBranch(branchName);
