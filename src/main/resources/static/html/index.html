@@ -5,84 +5,45 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-<title id="title">Home</title>
+<title id="title">GitPRD</title>
 </head>
 <!--<iframe src="push.html" id="push" hidden="hidden"></iframe>-->
  <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
 <script type="text/javascript" src="/js/jquery.min.js"></script>
 <script type="text/javascript" src="/js/jquery.cookie.js"></script>
-
 <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
 <link rel="stylesheet" href="/bootstrap/css/bootstrap.css" crossorigin="anonymous">
 <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
 <link rel="stylesheet" href="/bootstrap/css/bootstrap-theme.css" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/my.css" crossorigin="anonymous">
+
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 <script src="/bootstrap/js/bootstrap.min.js"  crossorigin="anonymous"></script>
 <!-- 拉取推送 -->
 <script src="/js/fetchData.js"></script>
 <body>
 
-	<!-- 导航条 -->
-	<div>
-		<nav class="navbar navbar-inverse">
-			<div class="container-fluid">
-				<!-- Brand and toggle get grouped for better mobile display -->
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-							data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="#">
-						<img src="../img/gitLogo.jpg" width="35px;" height="35px" style="margin-top: -6px;"/>
-					</a>
-				</div>
+<!--header-->
+<div style="height: 40px; margin-top: 10px; margin-left: 10px">
+<span style="float: left">
+    <div class="row">
 
-				<!-- Collect the nav links, forms, and other content for toggling -->
-				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-					<form class="navbar-form navbar-left">
-						<div class="form-group">
-							<input type="text" class="form-control" placeholder="检索你想要的PRD项目">
-						</div>
-						<button type="submit" class="btn btn-default">Search</button>
-					</form>
-					<ul class="nav navbar-nav navbar-right">
-						<li><a href="#" data-toggle="modal" data-target="#newBranchModal">新建分支</a></li>
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-							   aria-haspopup="true" aria-expanded="false">设置 <span class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li><a href="#" data-toggle="modal" data-target="#settingModal">Git PRD配置</a></li>
-								<li><a href="#">Another action</a></li>
-								<li><a href="#">Something else here</a></li>
-								<li role="separator" class="divider"></li>
-								<li><a href="#">取消</a></li>
-							</ul>
-						</li>
-					</ul>
-				</div><!-- /.navbar-collapse -->
-			</div><!-- /.container-fluid -->
-		</nav>
-	</div>
+        <input type="checkbox" id="switchBranchList" onclick="switchBranchList()">
+    <label for="switchBranchList" class="green" style=" text-align:center">显示所有分支</label>
+    </div>
+</span>
 
+    <span style="float: right;margin-top: -5px">
+    <a class="blue button float_a" style="font-style: inherit; color : #FBFBFF; " onclick="showNewBranchModal()">新建分支</a>
+    </span>
+</div>
 
-	<!-- 内容 -->
-	<div class="panel panel-primary;" style="height: auto">
-		<div class="panel-heading">
-			<span style="float: left;"><h3 class="panel-title" id="branchListTitle" style="width: 100%;height: 30px;display: block;line-height: 30px;text-align: center;">本地分支</h3></span>
-			<span style="float: left"><button id="switchBranchList" class="btn btn-default" onclick="switchBranchList()">切换分支列表</button></span>
-		</div>
-		<!--	<div class="panel-body">
-            </div>-->
-		<!-- Table -->
-		<table class="table table-hover" id="branchTable"></table>
-	<div>
-	</div>
-	</div>
-
-
+<!-- 内容 -->
+<div class="panel panel-primary;" style="height: auto">
+    <table class="table table-hover" id="branchTable"></table>
+<div>
+</div>
+</div>
 
 
 <!-- 新建分支 -->
@@ -143,6 +104,10 @@
     function hideSettingModal() {
 	    $('#settingModal').modal('hide')
 	}
+	
+	function showNewBranchModal() {
+        $('#newBranchModal').modal('show')
+    }
 </script>
 
 <script src="/js/websocket.js"></script>

@@ -21,13 +21,14 @@ $(function () {
  */
 
 function switchBranchList() {
-    var title = $("#branchListTitle").text()
-    if(title == "本地分支") {
-        getBranchList('ALL')
-    }else if (title == "全部分支") {
-        getBranchList('LOCAL')
+    var cookie = $.cookie('branchTitle');
+    if (cookie != null) {
+        if (cookie == "LOCAL") {
+            getBranchList("ALL")
+        }else {
+            getBranchList("LOCAL")
+        }
     }
-
 }
 
 function getBranchList(branchType) {
@@ -47,9 +48,6 @@ function getBranchList(branchType) {
             $("#branchTable").append(
                 "<tr class='active'>" +
                     "<td><span class='glyphicon glyphicon-th-list' aria-hidden='true'></span>分支名</td>" +
-                    "<td><span class='glyphicon glyphicon-time' aria-hidden='true'></span>上次修改时间</td> " +
-                    "<td><span class='glyphicon glyphicon-user' aria-hidden='true'></span>提交者</td> " +
-                    "<td><span class='glyphicon glyphicon-tags' aria-hidden='true'></span>备注</td> " +
                     "<td><span class='glyphicon glyphicon-cog' aria-hidden='true'></span>操作</td> " +
                     "<td><span class='glyphicon glyphicon-cloud' aria-hidden='true'></span>打开链接</td>" +
                 "</tr>"
@@ -64,21 +62,18 @@ function getBranchList(branchType) {
                 $("#branchTable").append(
                     "<tr>" +
                     "<td>" + value.name + "</td>" +
-                    "<td>2018/02/03</td>" +
-                    "<td>Sober</td>" +
-                    "<td>优化PRD, 调整布局</td>" +
                     "<td>" +
                     "<div class='btn-group' role='group' aria-label='...'>" +
                     "<button type='button' class='btn btn-default'>提交</button>" +
                     "<button type='button' class='btn btn-default' onclick= delBranch('"+value.name+"')>删除</button>" +
                     "</div>" +
                     "<div class='btn-group' role='group' aria-label='...'>" +
-                    "<button type='button' class='btn btn-default'>拉取更新</button>" +
+                    "<button type='button' class='btn btn-default' disabled>拉取更新</button>" +
                     "<button type='button' class='btn btn-default' disabled>撤销本地更改</button>" +
                     "</div>" +
                     "</td>" +
                     "<td>" +
-                    "<u><a href=“#”>在线地址</a></u>&nbsp;" +
+                    "<u><a onclick='openLink()'>在线地址</a></u>&nbsp;" +
                     "<u><a href=“#”>在Finder中打开</a></u>" +
                     "</td>" +
                     "</tr>"
@@ -112,4 +107,13 @@ function delBranch(name) {
             alert("请求失败 请重试!")
         }
     })
+}
+
+/**
+ * 新窗口中打开地址
+ */
+
+
+function openLink() {
+    window.open('http://www.waitsober.com', '_blank', 'toolbar=no,status=no,scrollbars=yes')
 }
