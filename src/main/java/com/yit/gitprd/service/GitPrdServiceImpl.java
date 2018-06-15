@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -56,7 +57,7 @@ public class GitPrdServiceImpl implements GitPrdService {
         }
     }
 
-    private List<Branch> onlyLocalBranches() {
+    private List<Branch> onlyLocalBranches() throws GitAPIException {
         List<Branch> list = new ArrayList<>();
         List<File> branchList = getLocalBranchedFiles();
         if (branchList == null) return list;
@@ -66,6 +67,14 @@ public class GitPrdServiceImpl implements GitPrdService {
             branch.setName(file.getName());
             list.add(branch);
         }
+        //解析状态
+        List<GitStatus> allBranchStatus = this.getAllBranchStatus();
+        list.forEach(branch -> {
+            Optional<GitStatus> gitStatus = allBranchStatus.stream()
+                    .filter(status -> status.getBranchName().equals(branch.getName()))
+                    .findAny();
+            branch.setStatus(gitStatus.orElseGet(null));
+        });
         return list;
     }
 

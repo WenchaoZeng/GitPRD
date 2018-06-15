@@ -9,6 +9,7 @@ public class Branch {
 
     private String name;
     private Type type;
+    private GitStatus status;
 //    private Date lastModifiedTime;
 //    private String lastCommitAuthor;
 //    private String lastComment;
@@ -34,5 +35,13 @@ public class Branch {
 
     public void setType(Type type) {
         this.type = type;
+    }
+
+    public GitStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(GitStatus status) {
+        this.status = status;
     }
 }
