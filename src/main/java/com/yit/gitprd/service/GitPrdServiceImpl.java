@@ -7,8 +7,7 @@ import com.yit.gitprd.pojo.GitStatus;
 import com.yit.gitprd.utils.FileUtil;
 import com.yit.gitprd.utils.StringUtil;
 import com.yit.gitprd.utils.SystemUtils;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.InvalidRefNameException;
+import org.eclipse.jgit.api.errors.*;
 import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.TrackingRefUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,8 +84,9 @@ public class GitPrdServiceImpl implements GitPrdService {
     @Override
     public void createBranch(String branchName, String refBranchName) throws GitAPIException, IOException {
         Assert.isTrue(StringUtil.isNotBlank(branchName), GitPrdCons.BRANCH_NAME_NULL_MSG);
-        Assert.isTrue(branchName.contains("/"), "名PRD称不能包含斜杠");
+        Assert.isTrue(!branchName.contains("/"), "名PRD称不能包含斜杠");
         Assert.isTrue(StringUtil.isNotBlank(refBranchName), "依赖PRD不能为空");
+        Assert.isTrue(!branchName.equals(refBranchName), "PRD名称重复");
         //将项目拉下来命名为${branchName}
         //切换到分支${refBranchName} -> 如果依赖分支不是master
         //创建本地分支${branchName}
@@ -98,9 +98,11 @@ public class GitPrdServiceImpl implements GitPrdService {
         try {
             gitApiService.createBranch(branchName, refBranchName);
         } catch (InvalidRefNameException e) {
-            //回滚
-            FileUtil.deleteDirectory(new File(gitHelper.getBranchesPath() + "/" + branchName));
+            rollback(branchName);
             throw new IllegalArgumentException(e.getMessage());
+        } catch (RefNotFoundException e) {
+            rollback(branchName);
+            throw new IllegalArgumentException("远程PRD不存在: " + refBranchName);
         }
         //删除重新克隆 (因为jGit不支持 push -u origin branch_name)
         FileUtil.deleteDirectory(new File(gitHelper.getBranchesPath() + "/" + branchName));
@@ -108,6 +110,12 @@ public class GitPrdServiceImpl implements GitPrdService {
 
 
     }
+
+    //回滚
+    private void rollback(String branchName) throws IOException {
+        FileUtil.deleteDirectory(new File(gitHelper.getBranchesPath() + "/" + branchName));
+    }
+
 
     @Override
     public void commitModify(String branchName, String comment) throws GitAPIException {
@@ -160,10 +168,23 @@ public class GitPrdServiceImpl implements GitPrdService {
     }
 
     @Override
-    public void cloneBranch(String branchName) throws GitAPIException {
+    public void cloneBranch(String branchName) throws GitAPIException, IOException {
         Assert.isTrue(StringUtil.isNotBlank(branchName), GitPrdCons.BRANCH_NAME_NULL_MSG);
-        gitApiService.cloneBranch(gitHelper.getBranchesPath() + "/" + branchName);
-        gitApiService.checkout(branchName);
+        try {
+            gitApiService.cloneBranch(gitHelper.getBranchesPath() + "/" + branchName);
+            gitApiService.checkout(branchName);
+        } catch (JGitInternalException e) {
+            String msg = e.getMessage();
+            if (msg.contains("already exists")) {
+                throw new IllegalArgumentException("PRD已存在: " + branchName);
+            }
+            throw new RuntimeException(e);
+        } catch (RefNotFoundException e) {
+            rollback(branchName);
+            throw new IllegalArgumentException("远程PRD不存在: " + branchName);
+        } catch (RefAlreadyExistsException e) {
+            throw new IllegalArgumentException("PRD已存在: " + branchName);
+        }
     }
 
     @Override

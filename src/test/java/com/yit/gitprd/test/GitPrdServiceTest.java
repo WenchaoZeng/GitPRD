@@ -29,7 +29,7 @@ public class GitPrdServiceTest {
     private static final String TEST_BRANCH_NAME = "on_sale";
 
     @Test
-    public void cloneBranch() throws GitAPIException {
+    public void cloneBranch() throws GitAPIException, IOException {
         gitPrdService.cloneBranch("gift_3");
     }
     @Test

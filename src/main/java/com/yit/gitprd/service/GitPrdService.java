@@ -66,7 +66,7 @@ public interface GitPrdService {
      * @param branchName 分支名
      * @throws GitAPIException
      */
-    void cloneBranch(String branchName) throws GitAPIException;
+    void cloneBranch(String branchName) throws GitAPIException, IOException;
 
     /**
      * 拉取更新 (先撤销改动再拉取,防止冲突)

@@ -187,16 +187,13 @@ public class JGitTest {
 
     @Test
     public void fetch() throws GitAPIException {
-        FetchResult result = git.fetch()
+        git.fetch()
+                .setRemoveDeletedRefs(true)
                 .setCredentialsProvider(upcp)
 //                .setDryRun(true)
                 .call();
-        TrackingRefUpdate trackingRefUpdate = result.getTrackingRefUpdate("refs/remotes/origin/gift");
-        System.out.println(result);
-        if (trackingRefUpdate != null) {
-            System.out.println(result);
-        }
     }
+
     @Test
     public void log() throws GitAPIException {
         RevFilter revFilter;
@@ -206,7 +203,7 @@ public class JGitTest {
         Iterator<RevCommit> iterator = revCommits.iterator();
         if (iterator.hasNext()) {
             RevCommit rev = iterator.next();
-            System.out.println("Commit: " + rev  + ", name: " + rev.getName() + ", id: " + rev.getId().getName());
+            System.out.println("Commit: " + rev + ", name: " + rev.getName() + ", id: " + rev.getId().getName());
         }
     }
 

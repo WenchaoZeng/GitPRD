@@ -65,7 +65,7 @@ public class NoticeSocket {
     @OnClose
     public synchronized void onClose(Session session, CloseReason reason) {
         try {
-            logger.info("客户端关闭, sid={}, reason", session.getId(), reason.toString());
+            logger.info("客户端关闭, sid={}, reason={}", session.getId(), reason.toString());
             sessions.remove(session);
         } catch (Exception e) {
             logger.error("onClose Exception", e);

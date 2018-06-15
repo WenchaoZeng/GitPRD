@@ -308,6 +308,7 @@ public class GitApiService {
     public FetchResult fetch(Boolean dryRun) throws GitAPIException {
         try (Git git = gitMaster()) {
             return git.fetch()
+                    .setRemoveDeletedRefs(true) //删除远程已经不存在的分支缓存
                     .setDryRun(dryRun)
                     .setCredentialsProvider(gitHelper.getCredentialsProvider())
                     .call();
