@@ -78,8 +78,8 @@ function getBranchList(branchType) {
                 "</div>" +
                 "</td>" +
                 "<td>" +
-                "<u><a onclick='openLink()'>在线地址</a></u>&nbsp;" +
-                "<u><a href=“#”>在Finder中打开</a></u>" +
+                "<u><a onclick='openLink(" + JSON.stringify(value.name) + " )'>在线地址</a></u>&nbsp;" +
+                "<u><a onclick='openInFinder(" + JSON.stringify(value.name) + " )'>在Finder中打开</a></u>" +
                 "</td>" +
                 "</tr>"
             );
@@ -92,37 +92,29 @@ function getBranchList(branchType) {
 
             if (value.type == "LOCAL") {
                 $('#' + value.name).append(
-                    "<button type='button' id='" + value.name +"reset"+ "' class='btn btn-default' onclick='resetLocalChange(" + JSON.stringify(value.brandName) + " )'>撤销本地更改</button>&nbsp;" +
-                    "<button type='button' id='" + value.name +"pull"+ "' class='btn btn-default'  onclick='pullRemoteUpdate(" + JSON.stringify(value.brandName) + " )'>拉取更新</button>&nbsp;"
+                    "<button type='button' id='" + value.name +"reset"+ "' class='btn btn-default' onclick='resetLocalChange(" + JSON.stringify(value.name) + " )'>撤销本地更改</button>&nbsp;" +
+                    "<button type='button' id='" + value.name +"pull"+ "' class='btn btn-default'  onclick='pullRemoteUpdate(" + JSON.stringify(value.name) + " )'>拉取更新</button>&nbsp;"
                 )
             }
+
+            if (value.status != null && !value.status.hasUncommittedChanges) {
+                $('#' + value.name + "reset").hide()
+            } else {
+                $('#' + value.name + "reset").show()
+                //parent.location.reload()
+            }
+
+            if (value.status != null && !value.status.hasUnPulledChanges) {
+                $('#' + value.name + "pull").hide()
+            } else {
+                $('#' + value.name + "pull").show()
+            }
+
         })
     } else {
         // do something
         alert(result.msg)
     }
-
-    // 更新按钮的状态
-    var result = requestApiGateway("/api/get_all_branch_status", null);
-    if(result.result) {
-        $.each(result.data, function (index, value) {
-            if (!value.hasUncommittedChanges) {
-                $('#' + value.branchName + "reset").hide()
-            } else {
-                $('#' + value.branchName + "reset").show()
-                //parent.location.reload()
-            }
-
-            if (!value.hasUnPulledChanges) {
-               $('#' + value.branchName + "pull").hide()
-            }else {
-                $('#' + value.branchName + "pull").show()
-            }
-        })
-    }else {
-        alert(result.msg)
-    }
-
 }
 
 /**
@@ -223,10 +215,28 @@ function requestApiGateway3(url, json, type, contentType, async) {
 /**
  * 新窗口中打开地址
  */
-function openLink() {
-    window.open('http://www.waitsober.com', '_blank', 'toolbar=no,status=no,scrollbars=yes')
+function openLink(name) {
+    var json = {
+        branchName : name
+    }
+   var result = requestApiGateway("/api/get_online_url",json)
+    if (!result.result) {
+        alert(result.msg)
+    }
 }
 
+/**
+ *  Finder打开
+ */
+function openInFinder(name) {
+     var json = {
+        branchName : name
+    }
+   var result = requestApiGateway("/api/open_in_finder",json)
+    if (!result.result) {
+        alert(result.msg)
+    }
+}
 /**
  * 推送
  */
