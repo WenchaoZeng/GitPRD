@@ -75,7 +75,6 @@ public class GitPrdServiceImpl implements GitPrdService {
         gitApiService.fetch(gitHelper.getRemotePath(), false, true);
         List<Branch> list = new ArrayList<>();
         List<Branch> remotes = gitApiService.remoteBranches();
-        if (remotes == null) return list;
         List<Branch> locals = this.onlyLocalBranches();
         for (Branch remote : remotes) {
             if (!branchContains(locals, remote)) list.add(remote);
@@ -172,7 +171,8 @@ public class GitPrdServiceImpl implements GitPrdService {
     private List<File> getLocalBranchedFiles() {
         File branches = new File(gitHelper.getBranchesPath());
         File[] files = branches.listFiles();
-        return Arrays.stream(files).filter(file -> file.isDirectory()).collect(Collectors.toList());
+        if (files == null) return new ArrayList<>();
+        return Arrays.stream(files).filter(File::isDirectory).collect(Collectors.toList());
     }
 
     @Override

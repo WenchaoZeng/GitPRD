@@ -1,6 +1,7 @@
 package com.yit.gitprd.utils;
 
 import org.apache.commons.io.FileUtils;
+import org.springframework.util.Assert;
 
 import java.io.File;
 
@@ -21,7 +22,7 @@ public class FileUtil extends FileUtils {
         if (StringUtil.isEmpty(path)) return;
         File file = new File(path);
         if (file.exists()) return;
-        file.mkdirs();
+        Assert.isTrue(file.mkdirs(), "文件夹创建失败");
     }
 
     /**
