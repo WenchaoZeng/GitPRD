@@ -10,6 +10,8 @@ import com.yit.gitprd.utils.SystemUtils;
 import org.eclipse.jgit.api.errors.*;
 import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.TrackingRefUpdate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -30,6 +32,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class GitPrdServiceImpl implements GitPrdService {
+
+    private final static Logger logger = LoggerFactory.getLogger(GitPrdServiceImpl.class);
 
     @Autowired
     private GitApiService gitApiService;
@@ -67,6 +71,8 @@ public class GitPrdServiceImpl implements GitPrdService {
 
 
     private List<Branch> onlyRemoteBranches() throws GitAPIException {
+        //获取远程分支之前先fetch一把
+        gitApiService.fetch(gitHelper.getRemotePath(), false, true);
         List<Branch> list = new ArrayList<>();
         List<Branch> remotes = gitApiService.remoteBranches();
         if (remotes == null) return list;
@@ -130,6 +136,8 @@ public class GitPrdServiceImpl implements GitPrdService {
         gitApiService.commit(branchName, comment);
         boolean pushResult = gitApiService.push(branchName);
         Assert.isTrue(pushResult, "提交失败");
+        //push之后需要pull一把
+        this.pull(branchName);
     }
 
     @Override
@@ -144,7 +152,7 @@ public class GitPrdServiceImpl implements GitPrdService {
         List<GitStatus> statuses = new ArrayList<>();
         List<File> branchList = getLocalBranchedFiles();
         if (branchList == null) return statuses;
-        FetchResult fetchResult = gitApiService.fetch(true);
+        FetchResult fetchResult = gitApiService.fetch(gitHelper.getMasterPath(), true, false);
 
         for (File file : branchList) {
             String branchName = file.getName();
@@ -192,8 +200,14 @@ public class GitPrdServiceImpl implements GitPrdService {
         Assert.isTrue(StringUtil.isNotBlank(branchName), GitPrdCons.BRANCH_NAME_NULL_MSG);
         //拉取更新 (先撤销改动再拉取,防止冲突)
         this.resetModify(branchName);
-        gitApiService.fetch(false);
-        gitApiService.pull(branchName);
+        gitApiService.fetch(gitHelper.getMasterPath(), false, true);
+        try {
+            gitApiService.pull(branchName);
+        } catch (RefNotAdvertisedException e) {
+            logger.error("RefNotAdvertisedException", e);
+            throw new IllegalArgumentException("远程PRD已经不存在");
+        }
+
     }
 
     @Override

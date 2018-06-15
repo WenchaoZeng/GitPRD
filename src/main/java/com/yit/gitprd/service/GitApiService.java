@@ -109,7 +109,13 @@ public class GitApiService {
         try (Git git = gitBranch(branchName)) {
             Status status = git.status().call();
             GitStatus gitStatus = new GitStatus();
-            gitStatus.setHasUncommittedChanges(status.hasUncommittedChanges());
+            int missing = status.getMissing().size(); //本地删除
+            int modified = status.getModified().size();//本地修改
+            int untracked = status.getUntracked().size();//本地新增文件
+            int untrackedFolders = status.getUntrackedFolders().size();//本地新增文件夹
+            int uncommittedChanges = status.getUncommittedChanges().size();//未提交修改
+            int sum = missing + modified + untracked + untrackedFolders + uncommittedChanges;
+            gitStatus.setHasUncommittedChanges(status.hasUncommittedChanges() || sum > 0);
             gitStatus.setBranchName(branchName);
             gitStatus.setStatus(status);
             return gitStatus;
@@ -270,7 +276,7 @@ public class GitApiService {
 
     private List<Branch> branches(ListBranchCommand.ListMode listMode) throws GitAPIException {
         List<Branch> list = new ArrayList<>();
-        try (Git git = gitMaster()) {
+        try (Git git = gitRemote()) {
             List<Ref> refs = git.branchList()
                     .setListMode(listMode)
                     .call();
@@ -305,10 +311,10 @@ public class GitApiService {
      * @return
      * @throws GitAPIException
      */
-    public FetchResult fetch(Boolean dryRun) throws GitAPIException {
-        try (Git git = gitMaster()) {
+    public FetchResult fetch(String branchPath, Boolean dryRun, Boolean removeDeletedRefs) throws GitAPIException {
+        try (Git git = git(branchPath)) {
             return git.fetch()
-                    .setRemoveDeletedRefs(true) //删除远程已经不存在的分支缓存
+                    .setRemoveDeletedRefs(removeDeletedRefs) //删除远程已经不存在的分支缓存
                     .setDryRun(dryRun)
                     .setCredentialsProvider(gitHelper.getCredentialsProvider())
                     .call();
@@ -319,6 +325,10 @@ public class GitApiService {
     //master分支
     private Git gitMaster() {
         return git(gitHelper.getMasterPath());
+    }
+    //remote分支
+    private Git gitRemote() {
+        return git(gitHelper.getRemotePath());
     }
 
     //本地分支

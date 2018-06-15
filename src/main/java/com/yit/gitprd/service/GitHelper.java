@@ -51,6 +51,9 @@ public class GitHelper {
     public String getMasterPath() {
         return getRootPath() + "/" + GitPrdCons.MASTER_NAME;
     }
+    public String getRemotePath() {
+        return getRootPath() + "/" + GitPrdCons.REMOTE_NAME;
+    }
 
     public String getBranchesPath() {
         return getRootPath() + "/" + GitPrdCons.BRANCHES_NAME;

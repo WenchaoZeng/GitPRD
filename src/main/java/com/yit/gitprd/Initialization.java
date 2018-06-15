@@ -32,7 +32,8 @@ public class Initialization implements InitializingBean {
         //创建工作目录
         createWorkSpace();
         //克隆prd主分支, 如果存在则不克隆
-        cloneMasterBranch();
+        initBranch(gitHelper.getMasterPath());
+        initBranch(gitHelper.getRemotePath());
     }
 
     //-- private methods
@@ -40,21 +41,23 @@ public class Initialization implements InitializingBean {
     private void createWorkSpace() {
         //* ~/gitprd (rootPath)
         //* ~/gitprd/master (master branch)
+        //* ~/gitprd/remote (remote branches) -> 用于记录最新的远程分支, 因为dryRun和prune冲突
         FileUtil.createFolders(gitHelper.getMasterPath());
         FileUtil.createFolders(gitHelper.getBranchesPath());
+        FileUtil.createFolders(gitHelper.getRemotePath());
     }
 
-    private void cloneMasterBranch() {
-        String masterPath = gitHelper.getMasterPath();
+    private void initBranch(String branchPath) {
+//        String masterPath = gitHelper.getMasterPath();
         try {
-            if (!gitApiService.respExist(masterPath)) {
-                logger.info("cloneMasterBranch - 仓库不存在, 开始克隆仓库: {}", masterPath);
-                gitApiService.cloneBranch(masterPath);
+            if (!gitApiService.respExist(branchPath)) {
+                logger.info("initBranch - 仓库不存在, 开始克隆仓库: {}", branchPath);
+                gitApiService.cloneBranch(branchPath);
             } else {
-                logger.info("cloneMasterBranch - 仓库已存在, 不用创建仓库: {}", masterPath);
+                logger.info("initBranch - 仓库已存在, 不用创建仓库: {}", branchPath);
             }
         } catch (GitAPIException e) {
-            logger.error("cloneMasterBranch", e);
+            logger.error("initBranch", e);
         } catch (Exception e) {
             logger.error("error", e);
         }
