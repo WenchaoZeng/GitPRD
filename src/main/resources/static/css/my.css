@@ -199,7 +199,7 @@ a.button {
  */
 
 .row {
-    width: 150px;
+    width: 270px;
     display: block;
     line-height: 30px;
     text-align: left;
@@ -210,12 +210,12 @@ input[type="checkbox"] {
 }
 input[type="checkbox"] + label {
     display: inline-block;
-    width: 150px;
-    height: 30px;
+    width: 50px;
+    height: 24px;
     position: relative;
     -webkit-transition: 0.3s;
     transition: 0.3s;
-    margin: 0px 20px;
+    margin: 0px 0px;
     box-sizing: border-box;
 }
 input[type="checkbox"] + label:after {
@@ -224,8 +224,8 @@ input[type="checkbox"] + label:after {
     position: absolute;
     left: 0px;
     top: 0px;
-    width: 30px;
-    height: 30px;
+    width: 24px;
+    height: 24px;
     -webkit-transition: 0.3s;
     transition: 0.3s;
     cursor: pointer;

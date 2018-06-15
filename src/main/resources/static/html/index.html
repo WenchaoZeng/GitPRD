@@ -19,22 +19,26 @@
 
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 <script src="/bootstrap/js/bootstrap.min.js"  crossorigin="anonymous"></script>
-<!-- 拉取推送 -->
+<script src="/bootstrap/js/bootbox.min.js"  crossorigin="anonymous"></script>
 <script src="/js/fetchData.js"></script>
+<!-- 拉取推送 -->
+<script src="/js/websocket.js"></script>
+
 <body>
 
 <!--header-->
 <div style="height: 40px; margin-top: 10px; margin-left: 10px">
 <span style="float: left">
     <div class="row">
-
+        <label style="margin-left : 10px; text-align:center; margin-top: -10px; vertical-align:middle;display:inline-block">是否显示远程分支&nbsp;</label>
         <input type="checkbox" id="switchBranchList" onclick="switchBranchList()">
-    <label for="switchBranchList" class="green" style=" text-align:center">显示所有分支</label>
+    <label for="switchBranchList" class="green" style=" text-align:center"></label>
     </div>
 </span>
 
     <span style="float: right;margin-top: -5px">
-    <a class="blue button float_a" style="font-style: inherit; color : #FBFBFF; " onclick="showNewBranchModal()">新建分支</a>
+    <a class="blue button float_a" style="font-style: inherit; color : #FBFBFF; "
+       onclick="showNewBranchModal()">新建分支</a>
     </span>
 </div>
 
@@ -58,16 +62,16 @@
 			<div class="modal-body">
 				<div class="input-group">
 					<span class="input-group-addon">源分支名 : </span>
-					<input type="text" class="form-control" placeholder="请输入">
+					<input type="text" id="sourceBranch" class="form-control" placeholder="请输入">
 					<span class="input-group-addon">新分支名 : </span>
-					<input type="text" class="form-control" placeholder="请输入">
+					<input type="text" id="targetBranch"  class="form-control" placeholder="请输入">
 				</div>
 				<br>
 			</div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" onclick="hideModal()">新建</button>
+                <button type="button" class="btn btn-primary" onclick="newBranch($('#sourceBranch').val(), $('#targetBranch').val())">新建</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal -->
@@ -95,27 +99,4 @@
 </div>
 
 </body>
-
-<script>
-	function hideModal() {
-	    $('#newBranchModal').modal('hide')
-    }
-
-    function hideSettingModal() {
-	    $('#settingModal').modal('hide')
-	}
-	
-	function showNewBranchModal() {
-        $('#newBranchModal').modal('show')
-    }
-</script>
-
-<script src="/js/websocket.js"></script>
-<script>
-	function noticeCallback(data) {
-		console.log("noticeType: " + data.type);
-		console.log(data.content);
-		//TODO: 处理逻辑:
-    }
-</script>
 </html>
