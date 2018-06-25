@@ -124,17 +124,17 @@ div#sidebarAd.cleanslate .ad-sponsor {
     }
 }
 
-@-webkit-keyframes orangePulse {
+@-webkit-keyframes grayPulse {
     from {
-        background-color: #d45500;
+        background-color: #6b6d6f;
         -webkit-box-shadow: 0 0 9px #333;
     }
     50% {
-        background-color: #ff5c00;
-        -webkit-box-shadow: 0 0 18px #ff5c00;
+        background-color: #545658;
+        -webkit-box-shadow: 0 0 18px #818385;
     }
     to {
-        background-color: #d45500;
+        background-color: #414345;
         -webkit-box-shadow: 0 0 9px #333;
     }
 }
@@ -179,8 +179,8 @@ a.button {
     -webkit-animation-duration: 2s;
 }
 
-.orange.button {
-    -webkit-animation-name: orangePulse;
+.gray.button {
+    -webkit-animation-name: grayPulse;
     -webkit-animation-duration: 3s;
 }
 

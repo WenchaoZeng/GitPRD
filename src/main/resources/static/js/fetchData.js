@@ -73,7 +73,7 @@ function getBranchList(branchType) {
                 "<td>" +
                 "<div id ='" + value.name + "' + class='btn-group' role='group' aria-label='...'>" +
                 "<span style='float: left;margin-top: -5px'> " +
-                "<a class='red button float_a' style='font-style: inherit; color : #FBFBFF; ' onclick= 'showDeleteModal(" + JSON.stringify(value.name) + ")'>删除</a> </span>" +
+                "<a class='red button float_a' id='" + value.name + "del" + "'  style='font-style: inherit; color : #FBFBFF; ' onclick= 'showDeleteModal(" + JSON.stringify(value.name) + ")'>删除</a> </span>" +
                 "</div>" +
                 "<div class='btn-group' role='group' aria-label='...'>" +
                 "</div>" +
@@ -120,7 +120,12 @@ function getBranchList(branchType) {
                 $('#' + value.name + "pull").show()
             }
 
-        })
+        });
+
+        $('#masterdel').attr("disabled", "true")
+        $('#masterdel').attr("class", "gray button float_a")
+        $('#masterdel').removeAttr("onclick")
+        $('#masterdel').removeAttr("href")
     } else {
         // do something
         slideNotification(result.msg, "ERROR")
