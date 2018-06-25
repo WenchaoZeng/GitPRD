@@ -165,8 +165,9 @@ a.button {
 }
 
 .blue.button {
-    -webkit-animation-name: bluePulse;
-    -webkit-animation-duration: 4s;
+/*    -webkit-animation-name: bluePulse;
+    -webkit-animation-duration: 4s;*/
+    background-color: #007d9a;
 }
 
 .red.button {

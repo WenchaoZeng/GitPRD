@@ -22,5 +22,5 @@ public class AppCons {
     /**
      * 通知轮询间隔时间
      */
-    public static final int NOTICE_INTERVAL = 30;
+    public static final int NOTICE_INTERVAL = 2;
 }
