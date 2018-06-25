@@ -12,7 +12,7 @@ $(function () {
     } else {
         getBranchList("LOCAL")
     }
-    //todo 同步显示按钮状态 根据cookie设置
+
     if (cookie == "ALL") {
         $("#switchBranchList").attr("checked", true)
     }else{
@@ -50,7 +50,7 @@ function getBranchList(branchType) {
         } else if (branchType == "LOCAL") {
             $.cookie('branchTitle', 'LOCAL');
         }
-        //alert(result.data)
+        //slideNotification(result.data)
         $("#branchTable").html("")
 
         $("#branchTable").append(
@@ -101,7 +101,7 @@ function getBranchList(branchType) {
                     " <a  id='" + value.name + "pull" + "'  class='blue button float_a' style='font-style: inherit; color : #FBFBFF; ' onclick='pullRemoteUpdate(" + JSON.stringify(value.name) + " )'>拉取更新</a> </span>"   +
 
                     "<span style='float: right;margin-top: -5px'>" +
-                    " <a  id='" + value.name + "commit" + "'  class='blue button float_a' style='font-style: inherit; color : #FBFBFF; ' onclick='commitChange(" + JSON.stringify(value.name) + " )'>提交改动</a> </span>"
+                    " <a  id='" + value.name + "commit" + "'  class='blue button float_a' style='font-style: inherit; color : #FBFBFF; ' onclick='openCommitWindow(" + JSON.stringify(value.name) + " )'>提交改动</a> </span>"
                 )
             }
 
@@ -123,7 +123,7 @@ function getBranchList(branchType) {
         })
     } else {
         // do something
-        alert(result.msg)
+        slideNotification(result.msg, "ERROR")
     }
 }
 
@@ -136,10 +136,9 @@ function delBranch(branchName) {
     }
     var result = requestApiGateway("/api/delete", json)
     if (result.result) {
-        alert("分支名 : " + branchName + " 删除成功!");
-        window.location.reload()
+        slideNotification("分支名 : " + branchName + " 删除成功!", "INFO")
     }else {
-        alert(result.msg)
+        slideNotification(result.msg, "ERROR")
     }
 }
 
@@ -147,36 +146,35 @@ function delBranch(branchName) {
  *  拉取分支到本地
  */
 function fetchBranchToLocal(branchName) {
-/*    bootbox.alert("拉取分支到本地成功!", function () {
-                })*/
-// todo 是否可以优化webView性能
-
     var json = {
         "branchName" : branchName
     }
 
     var result = requestApiGateway("/api/clone_branch", json)
     if (result.result) {
-        alert("分支名 : " + branchName + " 拉取到本地成功!");
-        window.location.reload()
+        slideNotification("分支名 : " + branchName + " 拉取到本地成功!", "INFO")
     }else {
-        alert(result.msg)
+        slideNotification(result.msg, "ERROR")
     }
 }
 
 /**
  *  提交改动
  */
-function commitChange(branchName) {
+function commitChange() {
+    $('#commitModal').modal('hide')
+
+    var branchName = $('#commitBranchName').val()
+    var comment = $('#commitMsg').val()
     var json = {
-        "branchName": branchName
+        "branchName": branchName,
+        "comment" : comment
     }
     var result = requestApiGateway("/api/commit_modify", json)
     if (result.result) {
-        alert("分支名 : " + branchName + " 本地修改提交成功!!");
-        window.location.reload()
+        slideNotification("分支名 : " + branchName + " 提交本地修改成功!", "INFO")
     }else {
-        alert(result.msg)
+        slideNotification(result.msg, "ERROR")
     }
 }
 
@@ -185,6 +183,8 @@ function commitChange(branchName) {
  *  模态框 /新建分支
  */
 function newBranch(sourceBranch, targetBranch) {
+    $('#newBranchModal').modal('hide')
+
     var json = {
         "refBranchName" : sourceBranch,
         "branchName" : targetBranch
@@ -194,18 +194,21 @@ function newBranch(sourceBranch, targetBranch) {
         // do something
         $("#sourceBranch").attr("value","");
         $("#targetBranch").attr("value","");
-        $('#newBranchModal').modal('hide')
         // refresh
-        window.location.reload()
+        slideNotification("分支名 : " + targetBranch + " 新建成功!", "INFO")
     }else {
-        alert(result.msg)
+        slideNotification(result.msg, "ERROR")
     }
-
 }
 
-function hideSettingModal() {
-    $('#settingModal').modal('hide')
+/**
+ *  模态框 /提交改动
+ */
+function openCommitWindow(brandName) {
+    $('#commitModal').modal('show')
+    $('#commitBranchName').val(brandName)
 }
+
 
 function showNewBranchModal() {
     $('#newBranchModal').modal('show')
@@ -247,7 +250,7 @@ function openLink(name) {
     }
    var result = requestApiGateway("/api/get_online_url",json)
     if (!result.result) {
-        alert(result.msg)
+        slideNotification(result.msg, "ERROR")
     }
 }
 
@@ -260,7 +263,7 @@ function openInFinder(name) {
     }
    var result = requestApiGateway("/api/open_in_finder",json)
     if (!result.result) {
-        alert(result.msg)
+        slideNotification(result.msg, "ERROR")
     }
 }
 /**
@@ -302,10 +305,9 @@ function resetLocalChange(name) {
     
     var result = requestApiGateway("/api/reset_modify", json)
     if (result.result) {
-        alert("撤销本地修改成功")
-        window.location.reload()
+        slideNotification("撤销本地修改成功", "INFO")
     }else {
-        alert(result.msg)
+        slideNotification(result.msg, "ERROR")
     }
 }
 /**
@@ -319,9 +321,43 @@ function pullRemoteUpdate(name) {
         }
         var result = requestApiGateway("/api/pull", json)
         if (result.result) {
-            alert(name + " : 拉取远程更新成功!")
+            slideNotification("拉取远程更新成功!", "INFO")
         } else {
-            alert(result.msg)
+            slideNotification(result.msg, "ERROR")
         }
     }
+}
+
+
+/**
+ * 通知
+ */
+function slideNotification(msg, level) {
+    if (level == "ERROR") {
+        $('#top_notification').css("background-color", "#d51b08");
+    }else {
+        $('#top_notification').css("background-color", "#5CB85C");
+    }
+
+    $('#notification_label').text(msg)
+    relocation()
+    $('#top_notification').slideDown(400);
+    setTimeout(upNotification, 1200)
+    setTimeout(reloadView, 1700)
+    //window.location.reload()
+}
+
+function upNotification() {
+    $("#top_notification").slideUp(400);
+}
+
+function reloadView() {
+     window.location.reload()
+}
+
+/**
+ *  点击回到页面顶部
+ */
+function relocation() {
+     $("html,body").animate({scrollTop:0}, 500);
 }

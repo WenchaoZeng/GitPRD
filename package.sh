@@ -23,4 +23,4 @@ $jdk/bin/javapackager \
    -v
 
 
-open /Users/clive/data/code/GitPRD/target/release/result/bundles/gitprd.app
+# open /Users/clive/data/code/GitPRD/target/release/result/bundles/gitprd.app

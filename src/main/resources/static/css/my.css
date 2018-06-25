@@ -171,7 +171,7 @@ a.button {
 
 .red.button {
     -webkit-animation-name: redPulse;
-    -webkit-animation-duration: 1s;
+    -webkit-animation-duration: 4s;
 }
 
 .magenta.button {
@@ -243,7 +243,7 @@ input[type="checkbox"] + label:after {
 #simple_1:checked + label.green,
 #simple_2:checked + label.green,
 #switchBranchList:checked + label.green {
-    background: #89d2d8;
+    background: #2aabbc;
 }
 /**
 * 圆心按钮
@@ -251,7 +251,7 @@ input[type="checkbox"] + label:after {
 #simple_1:checked + label.green:after,
 #simple_2:checked + label.green:after,
 #switchBranchList:checked + label.green:after {
-    background: #87bccc;
+    background: #027f9c;
 }
 #simple_1:checked + label:after,
 #simple_2:checked + label:after,
