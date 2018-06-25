@@ -170,8 +170,9 @@ a.button {
 }
 
 .red.button {
-    -webkit-animation-name: redPulse;
-    -webkit-animation-duration: 4s;
+/*    -webkit-animation-name: redPulse;
+       -webkit-animation-duration: 4s;*/
+    background-color: #bc330d;
 }
 
 .magenta.button {
@@ -180,8 +181,9 @@ a.button {
 }
 
 .gray.button {
-    -webkit-animation-name: grayPulse;
-    -webkit-animation-duration: 3s;
+  /*  -webkit-animation-name: grayPulse;
+       -webkit-animation-duration: 3s;*/
+    background-color: #3c3c3c;
 }
 
 .orangellow.button {

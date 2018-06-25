@@ -7,8 +7,9 @@
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
 <title id="title">GitPRD</title>
 </head>
+<link rel="stylesheet" href="/css/jquery.mloading.css" crossorigin="anonymous">
 <!--<iframe src="push.html" id="push" hidden="hidden"></iframe>-->
- <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
 <script type="text/javascript" src="/js/jquery.min.js"></script>
 <script type="text/javascript" src="/js/jquery.cookie.js"></script>
 <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
@@ -20,6 +21,7 @@
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 <script src="/bootstrap/js/bootstrap.min.js"  crossorigin="anonymous"></script>
 <script src="/bootstrap/js/bootbox.min.js"  crossorigin="anonymous"></script>
+<script src="/js/jquery.mloading.js"  crossorigin="anonymous"></script>
 <script src="/js/fetchData.js"></script>
 <!-- 拉取推送 -->
 <script src="/js/websocket.js"></script>
@@ -107,7 +109,7 @@
 </div>
 
 <!-- 拉取更新模态框 -->
-<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+<div class="modal" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -127,7 +129,7 @@
 </div>
 
 <!-- 删除模态框 -->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+<div class="modal" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -142,6 +144,26 @@
                 <button type="button" class="btn btn-primary" onclick="delBranch($('#deleteBranch').val())">确认删除</button>
             </div>
             <a hidden id="deleteBranch"></a>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!-- 重置模态框 -->
+<div class="modal" id="resetModal" tabindex="-1" role="dialog" aria-labelledby="resetModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="resetModalLabel">重置本地分支修改</h4>
+            </div>
+            <div class="modal-body">
+                <label id="resetLabel"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="">取消</button>
+                <button type="button" class="btn btn-primary" onclick="resetLocalChange($('#resetBranch').val())">确认重置</button>
+            </div>
+            <a hidden id="resetBranch"></a>
         </div><!-- /.modal-content -->
     </div><!-- /.modal -->
 </div>
