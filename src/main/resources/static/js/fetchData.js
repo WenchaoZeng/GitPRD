@@ -73,7 +73,7 @@ function getBranchList(branchType) {
                 "<td>" +
                 "<div id ='" + value.name + "' + class='btn-group' role='group' aria-label='...'>" +
                 "<span style='float: left;margin-top: -5px'> " +
-                "<a class='red button float_a' style='font-style: inherit; color : #FBFBFF; ' onclick= 'delBranch(" + JSON.stringify(value.name) + ")'>删除</a> </span>" +
+                "<a class='red button float_a' style='font-style: inherit; color : #FBFBFF; ' onclick= 'showDeleteModal(" + JSON.stringify(value.name) + ")'>删除</a> </span>" +
                 "</div>" +
                 "<div class='btn-group' role='group' aria-label='...'>" +
                 "</div>" +
@@ -98,7 +98,7 @@ function getBranchList(branchType) {
                     "<a  id='" + value.name + "reset" + "'  class='blue button float_a' style='font-style: inherit; color : #FBFBFF; ' onclick='resetLocalChange(" + JSON.stringify(value.name) + " )' >撤销本地更改</a> </span>" +
 
                     "<span style='float: right;margin-top: -5px'>" +
-                    " <a  id='" + value.name + "pull" + "'  class='blue button float_a' style='font-style: inherit; color : #FBFBFF; ' onclick='pullRemoteUpdate(" + JSON.stringify(value.name) + " )'>拉取更新</a> </span>"   +
+                    " <a  id='" + value.name + "pull" + "'  class='blue button float_a' style='font-style: inherit; color : #FBFBFF; ' onclick='showConfirmModal(" + JSON.stringify(value.name) + " )'>拉取更新</a> </span>"   +
 
                     "<span style='float: right;margin-top: -5px'>" +
                     " <a  id='" + value.name + "commit" + "'  class='blue button float_a' style='font-style: inherit; color : #FBFBFF; ' onclick='openCommitWindow(" + JSON.stringify(value.name) + " )'>提交改动</a> </span>"
@@ -131,6 +131,8 @@ function getBranchList(branchType) {
  *  删除分支
  */
 function delBranch(branchName) {
+    $('#deleteModal').modal('hide')
+
     var json = {
         "branchName" : branchName
     }
@@ -199,6 +201,23 @@ function newBranch(sourceBranch, targetBranch) {
     }else {
         slideNotification(result.msg, "ERROR")
     }
+}
+
+/**
+ *  显示确认拉取模态框
+ */
+function showConfirmModal(branchName) {
+    $('#confirmModal').modal('show')
+    $('#confirmBranch').val(branchName)
+}
+
+/**
+ *  显示删除模态框
+ */
+function showDeleteModal(branchName) {
+    $('#deleteModal').modal('show')
+    $('#deleteBranch').val(branchName)
+    $('#deleteLabel').text("确认要删除 : " + branchName + " 分支吗?")
 }
 
 /**
@@ -312,19 +331,19 @@ function resetLocalChange(name) {
 }
 /**
  * 拉取远程分支更新
+ *
  */
 function pullRemoteUpdate(name) {
-    var flag = confirm("拉取远程更新将丢失本地的更改, 是否继续?")
-    if (flag) {
-        var json = {
-            branchName: name
-        }
-        var result = requestApiGateway("/api/pull", json)
-        if (result.result) {
-            slideNotification("拉取远程更新成功!", "INFO")
-        } else {
-            slideNotification(result.msg, "ERROR")
-        }
+    $('#confirmModal').modal('hide')
+
+    var json = {
+        branchName: name
+    }
+    var result = requestApiGateway("/api/pull", json)
+    if (result.result) {
+        slideNotification("拉取远程更新成功!", "INFO")
+    } else {
+        slideNotification(result.msg, "ERROR")
     }
 }
 
