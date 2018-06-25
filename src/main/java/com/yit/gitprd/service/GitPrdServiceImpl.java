@@ -122,6 +122,9 @@ public class GitPrdServiceImpl implements GitPrdService {
         FileUtil.deleteDirectory(new File(gitHelper.getBranchesPath() + "/" + branchName));
         this.cloneBranch(branchName);
 
+        //收到拉取更新
+        this.pull(branchName);
+
 
     }
 
