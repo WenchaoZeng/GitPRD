@@ -72,7 +72,8 @@ function getBranchList(branchType) {
                 "<td>" + value.name + "</td>" +
                 "<td>" +
                 "<div id ='" + value.name + "' + class='btn-group' role='group' aria-label='...'>" +
-                "<button type='button' class='btn btn-default' onclick= 'delBranch(" + JSON.stringify(value.name) + ")'>删除</button>&nbsp;" +
+                "<span style='float: left;margin-top: -5px'> " +
+                "<a class='red button float_a' style='font-style: inherit; color : #FBFBFF; ' onclick= 'delBranch(" + JSON.stringify(value.name) + ")'>删除</a> </span>" +
                 "</div>" +
                 "<div class='btn-group' role='group' aria-label='...'>" +
                 "</div>" +
@@ -86,27 +87,36 @@ function getBranchList(branchType) {
 
             if (value.type == "REMOTE") {
                 $('#' + value.name).append(
-                    "<button type='button' class='btn btn-default' onclick= 'fetchBranchToLocal(" + JSON.stringify(value.name) + " )' >拉取到本地</button>&nbsp;"
+                    "<span style='float: right;margin-top: -5px'> " +
+                    "<a class='blue button float_a' style='font-style: inherit; color : #FBFBFF; 'onclick= 'fetchBranchToLocal(" + JSON.stringify(value.name) + " )' >拉取到本地</a> </span>"
                 )
             }
 
             if (value.type == "LOCAL") {
                 $('#' + value.name).append(
-                    "<button type='button' id='" + value.name +"reset"+ "' class='btn btn-default' onclick='resetLocalChange(" + JSON.stringify(value.name) + " )'>撤销本地更改</button>&nbsp;" +
-                    "<button type='button' id='" + value.name +"pull"+ "' class='btn btn-default'  onclick='pullRemoteUpdate(" + JSON.stringify(value.name) + " )'>拉取更新</button>&nbsp;"
+                    "<span style='float: right;margin-top: -5px'> " +
+                    "<a  id='" + value.name + "reset" + "'  class='blue button float_a' style='font-style: inherit; color : #FBFBFF; ' onclick='resetLocalChange(" + JSON.stringify(value.name) + " )' >撤销本地更改</a> </span>" +
+
+                    "<span style='float: right;margin-top: -5px'>" +
+                    " <a  id='" + value.name + "pull" + "'  class='blue button float_a' style='font-style: inherit; color : #FBFBFF; ' onclick='pullRemoteUpdate(" + JSON.stringify(value.name) + " )'>拉取更新</a> </span>"   +
+
+                    "<span style='float: right;margin-top: -5px'>" +
+                    " <a  id='" + value.name + "commit" + "'  class='blue button float_a' style='font-style: inherit; color : #FBFBFF; ' onclick='commitChange(" + JSON.stringify(value.name) + " )'>提交改动</a> </span>"
                 )
             }
 
             if (value.status != null && !value.status.hasUncommittedChanges) {
                 $('#' + value.name + "reset").hide()
-            } else {
+                $('#' + value.name + "commit").hide()
+            } else if(value.status != null && value.status.hasUncommittedChanges){
                 $('#' + value.name + "reset").show()
+                $('#' + value.name + "commit").show()
                 //parent.location.reload()
             }
 
             if (value.status != null && !value.status.hasUnPulledChanges) {
                 $('#' + value.name + "pull").hide()
-            } else {
+            } else if(value.status != null && value.status.hasUnPulledChanges){
                 $('#' + value.name + "pull").show()
             }
 
@@ -148,6 +158,22 @@ function fetchBranchToLocal(branchName) {
     var result = requestApiGateway("/api/clone_branch", json)
     if (result.result) {
         alert("分支名 : " + branchName + " 拉取到本地成功!");
+        window.location.reload()
+    }else {
+        alert(result.msg)
+    }
+}
+
+/**
+ *  提交改动
+ */
+function commitChange(branchName) {
+    var json = {
+        "branchName": branchName
+    }
+    var result = requestApiGateway("/api/commit_modify", json)
+    if (result.result) {
+        alert("分支名 : " + branchName + " 本地修改提交成功!!");
         window.location.reload()
     }else {
         alert(result.msg)
@@ -247,8 +273,10 @@ function noticeCallback(data) {
         $.each(data.content, function (index,value) {
             if (!value.hasUncommittedChanges) {
                 $('#'+value.branchName+"reset").hide()
+                $('#'+value.branchName+"commit").hide()
             }else {
                 $('#'+value.branchName+"reset").show()
+                $('#'+value.branchName+"commit").show()
                 //parent.location.reload()
             }
 
@@ -261,7 +289,7 @@ function noticeCallback(data) {
     }
 
     if(data.type == "MSG") {
-
+        // do nothing
     }
 }
 /**
@@ -284,13 +312,16 @@ function resetLocalChange(name) {
  * 拉取远程分支更新
  */
 function pullRemoteUpdate(name) {
-    var json = {
-        branchName : name
-    }
-    var result = requestApiGateway("/api/pull", json)
-    if (result.result) {
-        alert(name + " : 拉取远程更新成功!")
-    }else {
-        alert(result.msg)
+    var flag = confirm("拉取远程更新将丢失本地的更改, 是否继续?")
+    if (flag) {
+        var json = {
+            branchName: name
+        }
+        var result = requestApiGateway("/api/pull", json)
+        if (result.result) {
+            alert(name + " : 拉取远程更新成功!")
+        } else {
+            alert(result.msg)
+        }
     }
 }
