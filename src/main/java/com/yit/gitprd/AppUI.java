@@ -3,10 +3,16 @@ package com.yit.gitprd;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.*;
-
 import com.yit.gitprd.cons.AppCons;
+import com.yit.gitprd.cons.GitPrdCons;
+import com.yit.gitprd.pojo.GitStatus;
+import com.yit.gitprd.pojo.Notice;
+import com.yit.gitprd.service.GitPrdService;
+import com.yit.gitprd.utils.SpringUtils;
+import com.yit.gitprd.websocket.NoticeSocket;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Group;
@@ -14,6 +20,9 @@ import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 主视图
@@ -24,6 +33,10 @@ public class AppUI {
     private static final int HEIGHT = 700;
     private static int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
     private static int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppUI.class);
+
+    private GitPrdService gitPrdService;
+    private NoticeSocket noticeSocket ;
 
     // 场景
     private Scene scene;
@@ -31,6 +44,10 @@ public class AppUI {
     private WebView view;
 
     public AppUI() {
+        // init bean
+        gitPrdService = SpringUtils.getBean(GitPrdService.class);
+        noticeSocket = SpringUtils.getBean(NoticeSocket.class);
+
         // 创建Frame
         JFrame frame = new JFrame("PRD管理系统");
         final JFXPanel webBrowser = new JFXPanel();
@@ -82,5 +99,30 @@ public class AppUI {
             }
         });
 
+        // 窗口被激活立即推送
+        frame.addWindowFocusListener(new WindowAdapter() {
+            @Override
+            public void windowGainedFocus(WindowEvent e) {
+                new Thread(() -> asyncRun()).start();
+            }
+        });
+    }
+
+    private void asyncRun() {
+        LOGGER.info("window focusGained noticeTask . . .");
+        Notice notice;
+        try {
+            java.util.List<GitStatus> allBranchStatus = gitPrdService.getAllBranchStatus();
+            notice = Notice.newBranchStatusNotice(allBranchStatus);
+        } catch (IllegalArgumentException e) {
+            notice = Notice.newMsgNotice(e.getMessage());
+        } catch (GitAPIException e) {
+            LOGGER.error("getAllBranchStatus", e);
+            notice = Notice.newMsgNotice(GitPrdCons.GIT_API_ERROR);
+        } catch (Exception e) {
+            LOGGER.error("getAllBranchStatus", e);
+            notice = Notice.newMsgNotice(GitPrdCons.SYS_ERROR);
+        }
+        noticeSocket.sendNotice(notice);
     }
 }
