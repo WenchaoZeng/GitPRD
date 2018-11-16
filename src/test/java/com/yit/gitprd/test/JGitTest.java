@@ -23,10 +23,10 @@ import java.util.Set;
  */
 public class JGitTest {
 
-    private static final String GIT_URI = "http://gitlab.yit.com/javayuanjian/prd.git";
+    private static final String GIT_URI = "";
     private static final String PRD_ROOT_NAME = "gitPRD";
-    private static final String USER_NAME = "javayuanjian";
-    private static final String PASSWORD = "cliveyuan";
+    private static final String USER_NAME = "";
+    private static final String PASSWORD = "";
 
     private static final UsernamePasswordCredentialsProvider upcp = new UsernamePasswordCredentialsProvider(USER_NAME, PASSWORD);
 

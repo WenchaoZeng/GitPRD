@@ -6,9 +6,9 @@ server:
   contextPath: /
 
 git:
-  uri: http://gitlab.yit.com/javayuanjian/prd.git
-  user: javayuanjian
-  pwd: cliveyuan
+  uri: xxx
+  user: xxx
+  pwd: xxx
 
 gitprd:
   cfg:
